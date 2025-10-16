@@ -23,6 +23,11 @@ const Breadcrumbs = ({ pages }: Props) => {
             >
               {page.title}
             </Link>
+            {index + 1 !== pages.length && (
+              <span aria-hidden="true" className="mx-2 text-gray-400">
+                &gt;
+              </span>
+            )}
           </li>
         ))}
       </ul>

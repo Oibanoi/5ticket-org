@@ -216,7 +216,7 @@ export default function PageEvents() {
       <Breadcrumbs
         pages={[
           { href: "/", title: "Trang chủ " },
-          { href: "/events", title: " < Quản lý sự kiện" },
+          { href: "/events", title: "Quản lý sự kiện" },
         ]}
       />
       <section className="flex flex-wrap items-center whitespace-nowrap mt-4">
