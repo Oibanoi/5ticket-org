@@ -14,7 +14,7 @@ function useControlled<T>(
   const setValue = (newValue: Dispatch<T>, ...rest: any[]) => {
     if (typeof newValue === "function") {
       setValueState((v) => {
-        let value: T = (newValue as any)(v);
+        const value: T = (newValue as any)(v);
         onChange?.(value, ...rest);
         return value;
       });

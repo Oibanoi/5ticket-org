@@ -35,7 +35,7 @@ type RaceDetailList = {
 };
 const columnHelper = createColumnHelper<RaceDetailList>();
 const race: {
-  data: { list: any[]; totalPages: number; totalItems: number } | undefined;
+  data: { list: RaceDetailList[]; totalPages: number; totalItems: number } | undefined;
   isFetching?: boolean;
 } = {
   data: {
@@ -164,7 +164,7 @@ const columns = [
           </Button>
           <Button
             className="md:hidden btn-xs rounded-full ml-2"
-            onClick={(e: any) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               //   contextMenu(e, row.original);
             }}
@@ -181,7 +181,7 @@ const columns = [
 export default function PageEvents() {
   //   const { t } = useTranslation("router");
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<any>(null);
+  // const [status, setStatus] = useState<any>(null);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   //   const selected = useTenantStore((s) => s.selected)!;
   //   const queryClient = useQueryClient();
@@ -238,8 +238,8 @@ export default function PageEvents() {
               role="checkbox"
               type="button"
               className="aria-checked:text-secondary-600 aria-checked:border-current border-transparent border-b-2 font-bold text-gray-600 whitespace-nowrap"
-              aria-checked={option.value === status?.value}
-              onClick={() => setStatus(option)}
+              // aria-checked={option.value === status?.value}
+              // onClick={() => setStatus(option)}
             >
               {option.title}
             </button>

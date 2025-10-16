@@ -119,7 +119,7 @@ const ContextItem = (props: InternalOption & { isShow: boolean } & ContextMenu<a
   }, [props, props.isShow]);
   useIsomorphicLayoutEffect(() => {
     if (ref.current) {
-      let bcr = props.referenceTarget.getBoundingClientRect();
+      const bcr = props.referenceTarget.getBoundingClientRect();
       const contentWidth = ref.current.clientWidth;
       const contentHeight = ref.current.clientHeight;
       let [x, y] =

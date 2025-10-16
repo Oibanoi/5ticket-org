@@ -2,7 +2,7 @@ export const isString = (val: any): val is string => typeof val === "string";
 export const isUndefined = (obj: any): obj is undefined => typeof obj === "undefined";
 export const isNil = (val: any): val is null | undefined => isUndefined(val) || val === null;
 export const isObject = (fn: any): fn is object => !isNil(fn) && typeof fn === "object";
-export const isNumber = (v: any): v is Number => typeof v === "number" && !isNaN(v);
+export const isNumber = (v: any): v is number => typeof v === "number" && !isNaN(v);
 export const isFunction = (obj: any): obj is (...args: any[]) => any => typeof obj === "function";
 
 export const isPlainObject = (fn: any): fn is object => {
