@@ -1,4 +1,4 @@
-const baseURL = "/admin/events";
+const baseURL = " /events";
 export const Routers = {
   HOME: "/",
 
