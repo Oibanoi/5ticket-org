@@ -17,15 +17,15 @@ import {
   useForm,
   useWatch,
 } from "react-hook-form";
-import { Button } from "antd";
 import FormStep from "components/events/form-step";
+import StepTicket from "components/events/step-ticket";
+import StepConfig from "components/events/step-config";
 const steps: { label: string; disabled?: boolean }[] = [
   { label: "Tổng quan sự kiện" },
   { label: "Mô tả chi tiết" },
   { label: "Loại vé" },
-  { label: "Cấu hình khác", disabled: true },
-  { label: "Điều khoản tham gia" },
   { label: "Cấu hình khác" },
+  { label: "Sơ đồ chỗ ngồi" },
 ];
 
 const PageCreateEvent: NextPage = () => {
@@ -48,7 +48,7 @@ const PageCreateEvent: NextPage = () => {
       <Head>
         <title>5bib - Thêm sự kiện mới</title>
       </Head>
-      <div className="p-6">
+      <div>
         <Breadcrumbs
           pages={[
             { href: Routers.HOME, title: "Trang chủ" },
@@ -57,7 +57,8 @@ const PageCreateEvent: NextPage = () => {
           ]}
         />
 
-        <div className="mt-4">
+        <div className="mt-4 flex items-center gap-14">
+          <h1 className="text-2xl font-semibold text-gray-900">Tạo sự kiện mới</h1>
           <div aria-label="step-list" className="step-group -space-x-8">
             {steps.map(({ label, disabled }, index) => {
               if (disabled) return null;
@@ -104,20 +105,20 @@ const PageCreateEvent: NextPage = () => {
                 <FormStep.Step>
                   <Details />
                 </FormStep.Step>
-                {/* <FormStep.Step>
+                <FormStep.Step>
                   <StepTicket />
                 </FormStep.Step>
                 <FormStep.Step>
                   <StepConfig />
                 </FormStep.Step>
-                <FormStep.Step>
+                {/* <FormStep.Step>
                   <StepRules handleSaveUrl={handleSaveUrl} isSubmitAllowed={isSubmitAllowed} />
                 </FormStep.Step>
                 <FormStep.Step>
                   <CustomField />
                 </FormStep.Step> */}
               </FormStep>
-              <div className="col-span-1 lg:col-span-3 flex justify-end gap-3">
+              <div className="col-span-1 lg:col-span-3 flex justify-end gap-3 pt-4">
                 <button className="px-4 py-2 border rounded-md bg-white text-blue-600">
                   Lưu lại
                 </button>

@@ -11,43 +11,43 @@ const Overview: React.FC = () => {
         className="bg-white shadow-sm rounded-lg col-span-1 lg:col-span-1"
         title="Thông tin chung"
       >
-        <Form layout="vertical">
-          <Form.Item label="Tên sự kiện">
-            <Input placeholder="Nhập vào tên sự kiện" />
-          </Form.Item>
+        {/* <Form layout="vertical"> */}
+        <Form.Item label="Tên sự kiện">
+          <Input placeholder="Nhập vào tên sự kiện" />
+        </Form.Item>
 
-          <Form.Item label="Loại sự kiện">
-            <Select placeholder="Nhập vào tên sự kiện" options={[]} />
-          </Form.Item>
+        <Form.Item label="Loại sự kiện">
+          <Select placeholder="Nhập vào tên sự kiện" options={[]} />
+        </Form.Item>
 
-          <Form.Item label="Blacklist">
-            <Input placeholder="Email hoặc sdt" />
-            <div className="text-xs text-gray-400 mt-1">
-              Email hoặc số điện thoại của người mà bạn muốn từ chối phục vụ trong sự kiện.
-            </div>
-          </Form.Item>
-
-          <Form.Item label="Địa điểm diễn ra">
-            <Input placeholder="Nhập vào tên sự kiện" />
-          </Form.Item>
-
-          <div className="flex gap-3">
-            <Form.Item label="Hotline" className="flex-1">
-              <Input placeholder="0987654321" />
-            </Form.Item>
-            <Form.Item label="Mã sự kiện" className="w-40">
-              <Input placeholder="6 kí tự" />
-            </Form.Item>
+        <Form.Item label="Blacklist">
+          <Input placeholder="Email hoặc sdt" />
+          <div className="text-xs text-gray-400 mt-1">
+            Email hoặc số điện thoại của người mà bạn muốn từ chối phục vụ trong sự kiện.
           </div>
+        </Form.Item>
 
-          <Form.Item label="Slug của sự kiện">
-            <Input placeholder="Nhập vào tên sự kiện" />
-          </Form.Item>
+        <Form.Item label="Địa điểm diễn ra">
+          <Input placeholder="Nhập vào tên sự kiện" />
+        </Form.Item>
 
-          <Form.Item label="Cho phép mua vé theo nhóm">
-            <Switch />
+        <div className="flex gap-3">
+          <Form.Item label="Hotline" className="flex-1">
+            <Input placeholder="0987654321" />
           </Form.Item>
-        </Form>
+          <Form.Item label="Mã sự kiện" className="w-40">
+            <Input placeholder="6 kí tự" />
+          </Form.Item>
+        </div>
+
+        <Form.Item label="Slug của sự kiện">
+          <Input placeholder="Nhập vào tên sự kiện" />
+        </Form.Item>
+
+        <Form.Item label="Cho phép mua vé theo nhóm">
+          <Switch />
+        </Form.Item>
+        {/* </Form> */}
       </Card>
 
       <div className="col-span-1 lg:col-span-1">
