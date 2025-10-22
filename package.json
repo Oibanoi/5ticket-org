@@ -9,18 +9,24 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.9",
+    "@hookform/resolvers": "^3.3.2",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-table": "^8.21.3",
     "antd": "^5.27.4",
     "axios": "^1.12.2",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.23.24",
+    "joi": "^17.11.0",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
+    "framer-motion": "^12.23.24",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.65.0",
+    "react-dropzone": "^14.2.3",
+    "react-hook-form": "^7.48.2",
+    "react-hot-toast": "^2.4.1",
+    "slate": "^0.101.5",
+    "slate-history": "^0.100.0",
+    "slate-react": "^0.102.0",
     "react-icons": "^5.5.0",
     "zustand": "^5.0.8"
   },
@@ -30,8 +36,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.0.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
+    "postcss": "^8",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

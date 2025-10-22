@@ -1,103 +1,288 @@
+import dayjs from "dayjs";
 import React from "react";
-import { Card, Form, Input, Select, Switch, DatePicker, Checkbox, Radio } from "antd";
-import locale from "antd/lib/date-picker/locale/vi_VN";
-
-const { TextArea } = Input;
+import { Card, Input, Select, Switch, DatePicker, Checkbox, Radio } from "antd";
+import { Controller, useFormContext } from "react-hook-form";
 
 const Overview: React.FC = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card
         className="bg-white shadow-sm rounded-lg col-span-1 lg:col-span-1"
         title="Thông tin chung"
       >
-        {/* <Form layout="vertical"> */}
-        <Form.Item label="Tên sự kiện">
-          <Input placeholder="Nhập vào tên sự kiện" />
-        </Form.Item>
-
-        <Form.Item label="Loại sự kiện">
-          <Select placeholder="Nhập vào tên sự kiện" options={[]} />
-        </Form.Item>
-
-        <Form.Item label="Blacklist">
-          <Input placeholder="Email hoặc sdt" />
-          <div className="text-xs text-gray-400 mt-1">
-            Email hoặc số điện thoại của người mà bạn muốn từ chối phục vụ trong sự kiện.
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tên sự kiện <span className="text-red-500">*</span>
+            </label>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="Nhập vào tên sự kiện"
+                  status={errors.title ? "error" : ""}
+                />
+              )}
+            />
+            {errors.title && (
+              <div className="text-red-500 text-xs mt-1">{errors.title.message as string}</div>
+            )}
           </div>
-        </Form.Item>
 
-        <Form.Item label="Địa điểm diễn ra">
-          <Input placeholder="Nhập vào tên sự kiện" />
-        </Form.Item>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Loại sự kiện <span className="text-red-500">*</span>
+            </label>
+            <Controller
+              name="category"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  placeholder="Chọn loại sự kiện"
+                  className="w-full"
+                  status={errors.category ? "error" : ""}
+                  options={[
+                    { value: "conference", label: "Hội nghị" },
+                    { value: "concert", label: "Hòa nhạc" },
+                    { value: "workshop", label: "Workshop" },
+                  ]}
+                />
+              )}
+            />
+            {errors.category && (
+              <div className="text-red-500 text-xs mt-1">{errors.category.message as string}</div>
+            )}
+          </div>
 
-        <div className="flex gap-3">
-          <Form.Item label="Hotline" className="flex-1">
-            <Input placeholder="0987654321" />
-          </Form.Item>
-          <Form.Item label="Mã sự kiện" className="w-40">
-            <Input placeholder="6 kí tự" />
-          </Form.Item>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Blacklist</label>
+            <Controller
+              name="blacklist"
+              control={control}
+              render={({ field }) => <Input {...field} placeholder="Email hoặc sdt" />}
+            />
+            <div className="text-xs text-gray-400 mt-1">
+              Email hoặc số điện thoại của người mà bạn muốn từ chối phục vụ trong sự kiện.
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Địa điểm diễn ra <span className="text-red-500">*</span>
+            </label>
+            <Controller
+              name="location"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="Nhập địa điểm"
+                  status={errors.location ? "error" : ""}
+                />
+              )}
+            />
+            {errors.location && (
+              <div className="text-red-500 text-xs mt-1">{errors.location.message as string}</div>
+            )}
+          </div>
+
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Hotline</label>
+              <Controller
+                name="hotline"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="0987654321" />}
+              />
+            </div>
+            <div className="w-40">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Mã sự kiện</label>
+              <Controller
+                name="eventCode"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="6 kí tự" maxLength={6} />}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Slug của sự kiện</label>
+            <Controller
+              name="slug"
+              control={control}
+              render={({ field }) => <Input {...field} placeholder="slug-su-kien" />}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Cho phép mua vé theo nhóm</label>
+            <Controller
+              name="allowGroupBooking"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Switch checked={value} onChange={onChange} />
+              )}
+            />
+          </div>
         </div>
-
-        <Form.Item label="Slug của sự kiện">
-          <Input placeholder="Nhập vào tên sự kiện" />
-        </Form.Item>
-
-        <Form.Item label="Cho phép mua vé theo nhóm">
-          <Switch />
-        </Form.Item>
-        {/* </Form> */}
       </Card>
 
       <div className="col-span-1 lg:col-span-1">
         <Card className="bg-white shadow-sm rounded-lg" title="Mốc thời gian">
-          <Form layout="vertical">
-            <Form.Item label="Thời gian diễn ra">
-              <DatePicker showTime placeholder="dd/mm/yyyy" locale={locale} className="w-full" />
-            </Form.Item>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Thời gian diễn ra <span className="text-red-500">*</span>
+              </label>
+              <Controller
+                name="startDate"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    showTime
+                    placeholder="dd/mm/yyyy"
+                    className="w-full"
+                    status={errors.startDate ? "error" : ""}
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+                  />
+                )}
+              />
+              {errors.startDate && (
+                <div className="text-red-500 text-xs mt-1">
+                  {errors.startDate.message as string}
+                </div>
+              )}
+            </div>
 
-            <Form.Item label="Thời gian kết thúc">
-              <DatePicker showTime placeholder="dd/mm/yyyy" locale={locale} className="w-full" />
-            </Form.Item>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Thời gian kết thúc <span className="text-red-500">*</span>
+              </label>
+              <Controller
+                name="endDate"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    showTime
+                    placeholder="dd/mm/yyyy"
+                    className="w-full"
+                    status={errors.endDate ? "error" : ""}
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+                  />
+                )}
+              />
+              {errors.endDate && (
+                <div className="text-red-500 text-xs mt-1">{errors.endDate.message as string}</div>
+              )}
+            </div>
 
-            <Form.Item label="Thời gian thay đổi thông tin">
-              <DatePicker showTime placeholder="dd/mm/yyyy" locale={locale} className="w-full" />
-            </Form.Item>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Thời gian thay đổi thông tin
+              </label>
+              <Controller
+                name="changeInfoDeadline"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    showTime
+                    placeholder="dd/mm/yyyy"
+                    className="w-full"
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+                  />
+                )}
+              />
+            </div>
 
-            <Form.Item label="Thời gian mở checkin">
-              <DatePicker showTime placeholder="dd/mm/yyyy" locale={locale} className="w-full" />
-            </Form.Item>
-          </Form>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Thời gian mở checkin
+              </label>
+              <Controller
+                name="checkinTime"
+                control={control}
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    showTime
+                    placeholder="dd/mm/yyyy"
+                    className="w-full"
+                    value={field.value ? dayjs(field.value) : null}
+                    onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+                  />
+                )}
+              />
+            </div>
+          </div>
         </Card>
 
         <Card className="bg-white shadow-sm rounded-lg mt-6" title="Phương thức thanh toán">
-          <Form layout="vertical">
-            <Form.Item>
-              <Radio.Group>
-                <Radio value="auto">Thanh toán tự động qua trung gian thanh toán</Radio>
-                <div className="text-xs text-gray-400 ml-6">
-                  Vé sẽ được gửi về tài khoản của người tổ chức khi thanh toán thành công
-                </div>
-              </Radio.Group>
-            </Form.Item>
+          <div className="space-y-4">
+            <div>
+              <Controller
+                name="paymentMethod"
+                control={control}
+                render={({ field }) => (
+                  <Radio.Group {...field}>
+                    <Radio value="auto">Thanh toán tự động qua trung gian thanh toán</Radio>
+                    <div className="text-xs text-gray-400 ml-6">
+                      Vé sẽ được gửi về tài khoản của người tổ chức khi thanh toán thành công
+                    </div>
+                  </Radio.Group>
+                )}
+              />
+            </div>
 
-            <Form.Item label="Chọn tất cả">
-              <Checkbox>Quét QR chuyển khoản ngân hàng - PayX QR</Checkbox>
-            </Form.Item>
+            <div>
+              <Controller
+                name="selectAllPayments"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <Checkbox checked={value} onChange={(e) => onChange(e.target.checked)}>
+                    Chọn tất cả
+                  </Checkbox>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-1 gap-2">
-              <Checkbox>PayX thẻ ATM nội địa</Checkbox>
-              <Checkbox>PayX thẻ Quốc tế</Checkbox>
-              <Checkbox>Quét QR chuyển khoản ngân hàng</Checkbox>
-              <Checkbox>Thẻ ATM nội địa</Checkbox>
-              <Checkbox>Thẻ tín dụng/ghi nợ</Checkbox>
+              {[
+                { key: "payxQr", label: "Quét QR chuyển khoản ngân hàng - PayX QR" },
+                { key: "payxAtm", label: "PayX thẻ ATM nội địa" },
+                { key: "payxIntl", label: "PayX thẻ Quốc tế" },
+                { key: "bankQr", label: "Quét QR chuyển khoản ngân hàng" },
+                { key: "atmCard", label: "Thẻ ATM nội địa" },
+                { key: "creditCard", label: "Thẻ tín dụng/ghi nợ" },
+              ].map(({ key, label }) => (
+                <Controller
+                  key={key}
+                  name={`paymentOptions.${key}`}
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Checkbox checked={value} onChange={(e) => onChange(e.target.checked)}>
+                      {label}
+                    </Checkbox>
+                  )}
+                />
+              ))}
             </div>
-          </Form>
+          </div>
         </Card>
       </div>
-
-      <div className="col-span-1 lg:col-span-1" />
     </div>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Input, Select, Switch, Button, Collapse } from "antd";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   PlusOutlined,
   UploadOutlined,
@@ -31,7 +32,8 @@ interface Category {
 }
 
 const StepConfig: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([
+  const { control, watch, setValue, formState: { errors } } = useFormContext();
+  const categories = watch('categories') || [
     {
       id: 1,
       name: "Cat 1",
@@ -95,67 +97,65 @@ const StepConfig: React.FC = () => {
       expanded: false,
       fields: [],
     },
-  ]);
+  ];
 
   const addField = (categoryId: number): void => {
-    setCategories(
-      categories.map((cat) => {
-        if (cat.id === categoryId) {
-          return {
-            ...cat,
-            fields: [
-              ...cat.fields,
-              {
-                id: Date.now(),
-                name: "Default",
-                type: "text",
-                defaultValue: "",
-                note: "",
-                attachment: "",
-                required: true,
-              },
-            ],
-          };
-        }
-        return cat;
-      })
-    );
+    const newCategories = categories.map((cat: any) => {
+      if (cat.id === categoryId) {
+        return {
+          ...cat,
+          fields: [
+            ...cat.fields,
+            {
+              id: Date.now(),
+              name: "Default",
+              type: "text",
+              defaultValue: "",
+              note: "",
+              attachment: "",
+              required: true,
+            },
+          ],
+        };
+      }
+      return cat;
+    });
+    setValue('categories', newCategories, { shouldDirty: true });
   };
 
   const deleteField = (categoryId: number, fieldId: number): void => {
-    setCategories(
-      categories.map((cat) => {
-        if (cat.id === categoryId) {
-          return {
-            ...cat,
-            fields: cat.fields.filter((field) => field.id !== fieldId),
-          };
-        }
-        return cat;
-      })
-    );
+    const newCategories = categories.map((cat: any) => {
+      if (cat.id === categoryId) {
+        return {
+          ...cat,
+          fields: cat.fields.filter((field: any) => field.id !== fieldId),
+        };
+      }
+      return cat;
+    });
+    setValue('categories', newCategories, { shouldDirty: true });
   };
 
   const updateField = (categoryId: number, fieldId: number, updates: Partial<InfoField>): void => {
-    setCategories(
-      categories.map((cat) => {
-        if (cat.id === categoryId) {
-          return {
-            ...cat,
-            fields: cat.fields.map((field) =>
-              field.id === fieldId ? { ...field, ...updates } : field
-            ),
-          };
-        }
-        return cat;
-      })
-    );
+    const newCategories = categories.map((cat: any) => {
+      if (cat.id === categoryId) {
+        return {
+          ...cat,
+          fields: cat.fields.map((field: any) =>
+            field.id === fieldId ? { ...field, ...updates } : field
+          ),
+        };
+      }
+      return cat;
+    });
+    setValue('categories', newCategories, { shouldDirty: true });
   };
 
   const toggleCategory = (categoryId: number): void => {
-    setCategories(
-      categories.map((cat) => (cat.id === categoryId ? { ...cat, expanded: !cat.expanded } : cat))
+    const newCategories = categories.map((cat: any) => 
+      cat.id === categoryId ? { ...cat, expanded: !cat.expanded } : cat
     );
+    setValue('categories', newCategories, { shouldDirty: true });
   };
 
   return (
