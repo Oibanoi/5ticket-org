@@ -105,7 +105,7 @@ const columns = [
             )}
           </div>
           <div className="flex-1 overflow-hidden">
-            <Link href={`/events/detail?id=${row.original.id}`}>
+            <Link href={`/events/${row.original.id}`}>
               <b>{getValue()}</b>
             </Link>
             <div className="text-xs flex gap-x-1 items-center">

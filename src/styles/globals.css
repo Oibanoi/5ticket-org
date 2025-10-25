@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+
+
 @custom-variant dark (&:is(.dark *));
 /* @import url("https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;700&display=swap"); */
 
@@ -186,5 +188,51 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .step-group {
+    @apply flex items-center relative gap-3;
+    /* thêm khoảng cách giữa các step */
+  }
+
+  .step {
+    @apply flex items-center relative select-none px-6 h-9 rounded-2xl border border-current text-gray-500 bg-white transition-all duration-200 ease-in-out;
+
+    padding-top: 0;
+    padding-bottom: 0;
+
+    /* line nối giữa các step */
+    &::after {
+      content: "";
+      @apply absolute top-1/2 right-[-1.25rem] w-5 h-px bg-current opacity-30;
+      transform: translateY(-50%);
+    }
+
+    /* ẩn line cho step cuối */
+    &:last-child::after {
+      content: none;
+    }
+  }
+
+  .step-done {
+    @apply text-blue-normal;
+  }
+
+  .step-active {
+    @apply border-blue-normal bg-blue-normal text-white;
+  }
+
+  .step:not(.step-active):not(.step-done) {
+    @apply border-gray-300 text-gray-400 bg-gray-50;
+  }
+
+  .step:disabled {
+    @apply text-gray-300 cursor-not-allowed;
+  }
+
+  .step:not(.step-active):hover {
+    @apply bg-gray-100;
   }
 }

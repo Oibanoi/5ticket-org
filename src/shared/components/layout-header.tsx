@@ -11,7 +11,7 @@ const LayoutHeader = () => {
       layoutScroll
       className="contents lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex scrollbar-dark"
     >
-      <div className="contents lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto lg:border-r  lg:px-6 lg:pb-8 lg:pt-4  xl:w-80 dark:bg-dark">
+      <div className="contents lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto  lg:px-6 lg:pb-8 lg:pt-4  xl:w-80 dark:bg-dark">
         <div className="hidden lg:flex">
           <Link aria-label="Home" href="/" className="flex items-end">
             <Logo height={40} className="fill-black dark:fill-light" />

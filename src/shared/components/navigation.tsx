@@ -11,6 +11,7 @@ import useBoolean from "../hooks/useBoolean";
 import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
 import { Routers } from "./router";
+
 type Permission = number;
 export interface NavigationItemType {
   title: string;
@@ -36,13 +37,7 @@ function useInitialValue<T>(value: T, condition = true): T {
   return condition ? initialValue : value;
 }
 
-function TopLevelNavItem({
-  href,
-  children,
-}: {
-  href: string;
-  children?: React.ReactNode;
-}) {
+function TopLevelNavItem({ href, children }: { href: string; children?: React.ReactNode }) {
   return (
     <li className="md:hidden">
       <Link
@@ -86,29 +81,17 @@ function NavLink({
     </>
   );
   return onClick ? (
-    <button
-      onClick={onClick}
-      aria-current={active ? "page" : undefined}
-      className={className}
-    >
+    <button onClick={onClick} aria-current={active ? "page" : undefined} className={className}>
       {Child}
     </button>
-  ) : (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={className}
-    >
+  ) : href ? (
+    <Link href={href} aria-current={active ? "page" : undefined} className={className}>
       {Child}
     </Link>
-  );
+  ) : null;
 }
 
-function isMatchRoute(
-  link: NavigationItemType,
-  pathname: string,
-  asPath?: string
-) {
+function isMatchRoute(link: NavigationItemType, pathname: string, asPath?: string) {
   return pathname === "/"
     ? pathname === link.href
     : link.isExact
@@ -126,9 +109,11 @@ function NavigationGroup({
   //   const isInsideMobileNavigation = useIsInsideMobileNavigation();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const asPath = `${pathname}${
-    searchParams.toString() ? "?" + searchParams.toString() : ""
-  }`;
+  const asPath = `${pathname}${searchParams.toString() ? "?" + searchParams.toString() : ""}`;
+
+  // Extract ID from pathname for dynamic routes
+  const pathSegments = pathname.split("/");
+  const currentId = pathSegments[2]; // /events/[id] -> pathSegments[2] is the id
   //   const [sections] = useInitialValue(
   //     [useSectionStore((s) => s.sections)],
   //     isInsideMobileNavigation
@@ -143,10 +128,7 @@ function NavigationGroup({
 
   return (
     <li className={clsx("relative mt-6", className)}>
-      <motion.h2
-        layout="position"
-        className="text-xs font-semibold text-zinc-900 dark:text-white"
-      >
+      <motion.h2 layout="position" className="text-xs font-semibold text-zinc-900 dark:text-white">
         {group.title}
       </motion.h2>
       <div className="relative mt-3 pl-2">
@@ -158,12 +140,8 @@ function NavigationGroup({
             />
           )}
         </AnimatePresence>
-        <ul
-          role="list"
-          data-test="side-navigation"
-          className="border-l border-transparent"
-        >
-          {group.links.map((link) => {
+        <ul role="list" data-test="side-navigation" className="border-l border-transparent">
+          {group.links.map((link, index) => {
             const isMatchedRoot = isMatchRoute(link, pathname, asPath);
             return (
               <motion.li key={link.href} layout="position" className="relative">
@@ -176,6 +154,92 @@ function NavigationGroup({
                 >
                   {link.title}
                 </NavLink>
+                {/* Sublinks */}
+                {(() => {
+                  // For sublinks, ignore isExact and use startsWith logic
+                  // But exclude /events/create route
+                  const isSublinksMatch =
+                    link.links &&
+                    pathname.startsWith(link.href) &&
+                    !pathname.startsWith("/events/create");
+                  console.log("Sublinks condition:", {
+                    title: link.title,
+                    hasLinks: !!link.links,
+                    isMatchedRoot,
+                    isSublinksMatch,
+                    pathname,
+                    href: link.href,
+                  });
+                  return isSublinksMatch;
+                })() && (
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.ul
+                      key="sublinks"
+                      role="list"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: 1,
+                        transition: { delay: 0.1 },
+                      }}
+                      exit={{
+                        opacity: 0,
+                        transition: { duration: 0.15 },
+                      }}
+                      className="relative"
+                    >
+                      {link.links?.map((sublink, index) => {
+                        const shouldShow =
+                          typeof sublink.show === "undefined"
+                            ? true
+                            : typeof sublink.show === "boolean"
+                            ? sublink.show
+                            : typeof sublink.show === "string"
+                            ? sublink.show === pathname
+                            : sublink.show(pathname);
+
+                        return shouldShow ? (
+                          <motion.li
+                            key={sublink.href || index}
+                            initial={{ opacity: 0 }}
+                            animate={{
+                              opacity: 1,
+                              transition: { delay: 0.1 },
+                            }}
+                            exit={{
+                              opacity: 0,
+                              transition: { duration: 0.15 },
+                            }}
+                          >
+                            {(() => {
+                              const resolvedHref =
+                                sublink.params && currentId
+                                  ? sublink.href?.replace("[id]", currentId)
+                                  : sublink.href;
+
+                              // Skip rendering if href still contains [id] and params is true
+                              if (sublink.params && resolvedHref?.includes("[id]")) {
+                                return null;
+                              }
+
+                              return (
+                                <NavLink
+                                  icon={sublink.icon}
+                                  href={resolvedHref}
+                                  onClick={sublink.onClick}
+                                  tag={sublink.tag}
+                                  active={pathname.startsWith(sublink.href)}
+                                  isAnchorLink
+                                >
+                                  {sublink.title}
+                                </NavLink>
+                              );
+                            })()}
+                          </motion.li>
+                        ) : null;
+                      })}
+                    </motion.ul>
+                  </AnimatePresence>
+                )}
               </motion.li>
             );
           })}
@@ -219,11 +283,7 @@ export function Navigation(props: JSX.IntrinsicElements["nav"]) {
           />
         ))}
         <li className="sticky bottom-0 z-10 mt-6">
-          <Button
-            disabled={isLoading.value}
-            className="w-full"
-            onClick={logout}
-          >
+          <Button disabled={isLoading.value} className="w-full" onClick={logout}>
             Đăng xuất
           </Button>
         </li>

@@ -1,4 +1,4 @@
-const baseURL = "/admin/events";
+const baseURL = "/events";
 export const Routers = {
   HOME: "/",
 
@@ -10,7 +10,7 @@ export const Routers = {
   // Events/races
   EVENTS: baseURL,
   EVENTS_CREATE: baseURL + "/create",
-  EVENT_DETAIL_OVERVIEW: baseURL + "/[id]/overview",
+  EVENT_DETAIL_OVERVIEW: baseURL + "/[id]",
 
   // Orders
   ORDERS: "/admin/orders",
@@ -28,15 +28,15 @@ export const Routers = {
 };
 export const EventRouters = {
   EDIT: baseURL + "/edit/[id]",
-  OVERVIEW: baseURL + "/[id]/overview",
+  OVERVIEW: baseURL + "/[id]",
   DETAIL: baseURL + "/[id]/detail",
   ORDER: baseURL + "/[id]/order",
-  ATHLETE: baseURL + "/[id]/athlete",
-  VOUCHER: baseURL + "/[id]/voucher",
-  STAFF: baseURL + "/[id]/staff",
+  // ATHLETE: baseURL + "/[id]/athlete",
+  // VOUCHER: baseURL + "/[id]/voucher",
+  // STAFF: baseURL + "/[id]/staff",
   TICKET: baseURL + "/[id]/ticket",
-  REPORT: baseURL + "/[id]/report",
-  GROUP: baseURL + "/[id]/group",
+  // REPORT: baseURL + "/[id]/report",
+  // GROUP: baseURL + "/[id]/group",
 };
 export const ChallengeRouters = {
   EDIT: "/admin/challenge/edit/[id]",

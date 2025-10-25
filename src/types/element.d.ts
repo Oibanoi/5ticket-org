@@ -6,9 +6,9 @@ export type CustomProps<P, A extends keyof JSX.IntrinsicElements = "div"> = P &
 declare let __: "1D45E01E-AF44-47C4-988A-19A94EBAF55C";
 export declare type __ = typeof __;
 
-export type PropsOf<TTag extends ReactTag> = TTag extends React.ElementType
-  ? Omit<React.ComponentProps<TTag>, "ref">
-  : never;
+// export type PropsOf<TTag extends ReactTag> = TTag extends React.ElementType
+//   ? Omit<React.ComponentProps<TTag>, "ref">
+//   : never;
 
 type OurProps<TTag extends ReactTag, TSlot> = {
   ref?: React.Ref<HTMLElement>;
@@ -52,7 +52,7 @@ export type Props<TTag extends ReactTag, Overrides = {}, TSlot = {}> = CleanProp
 type GetObject<T extends object> = { [K in keyof T]: T[K] };
 
 export type ComponentDynamicRef<Props, S extends ReactTag = "section"> = <
-  T extends React.ElementType<Props> | ReactTag = S,
+  T extends React.ElementType<Props> | ReactTag = S
 >(
   props: PropsWithStandardRef<T, Props>
 ) => React.ReactElement<any, any> | null;
