@@ -116,6 +116,7 @@ const Details: React.FC = () => {
   } = useFormContext();
   const descriptions = watch("descriptions") || [{ title: "", content: "" }];
   const organizers = watch("organizers") || [{ name: "", logo: null }];
+  const { uploadFiles } = useFileUpload({ maxSize: 2 * 1024 * 1024 });
 
   const addDescription = () => {
     setValue("descriptions", [...descriptions, { title: "", content: "" }], { shouldDirty: true });
@@ -185,7 +186,6 @@ const Details: React.FC = () => {
                       const files = Array.from(e.target.files || []);
                       if (files.length > 0) {
                         try {
-                          const { uploadFiles } = useFileUpload({ maxSize: 2 * 1024 * 1024 });
                           const uploadedFiles = await uploadFiles(files);
                           if (uploadedFiles) {
                             const newOrganizers = [...organizers];

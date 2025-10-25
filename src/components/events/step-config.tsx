@@ -32,8 +32,13 @@ interface Category {
 }
 
 const StepConfig: React.FC = () => {
-  const { control, watch, setValue, formState: { errors } } = useFormContext();
-  const categories = watch('categories') || [
+  const {
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const categories = watch("categories") || [
     {
       id: 1,
       name: "Cat 1",
@@ -120,7 +125,7 @@ const StepConfig: React.FC = () => {
       }
       return cat;
     });
-    setValue('categories', newCategories, { shouldDirty: true });
+    setValue("categories", newCategories, { shouldDirty: true });
   };
 
   const deleteField = (categoryId: number, fieldId: number): void => {
@@ -133,7 +138,7 @@ const StepConfig: React.FC = () => {
       }
       return cat;
     });
-    setValue('categories', newCategories, { shouldDirty: true });
+    setValue("categories", newCategories, { shouldDirty: true });
   };
 
   const updateField = (categoryId: number, fieldId: number, updates: Partial<InfoField>): void => {
@@ -148,14 +153,14 @@ const StepConfig: React.FC = () => {
       }
       return cat;
     });
-    setValue('categories', newCategories, { shouldDirty: true });
+    setValue("categories", newCategories, { shouldDirty: true });
   };
 
   const toggleCategory = (categoryId: number): void => {
-    const newCategories = categories.map((cat: any) => 
+    const newCategories = categories.map((cat: any) =>
       cat.id === categoryId ? { ...cat, expanded: !cat.expanded } : cat
     );
-    setValue('categories', newCategories, { shouldDirty: true });
+    setValue("categories", newCategories, { shouldDirty: true });
   };
 
   return (
@@ -164,7 +169,7 @@ const StepConfig: React.FC = () => {
         <h1 className="text-xl font-semibold text-gray-900 mb-6">Cấu hình trường thông tin</h1>
 
         <div className="space-y-4 ">
-          {categories.map((category) => (
+          {categories.map((category: Category) => (
             <div key={category.id} className=" rounded-lg ">
               {/* Category Header */}
               <div
@@ -185,7 +190,7 @@ const StepConfig: React.FC = () => {
               {/* Category Content */}
               {category.expanded && (
                 <div className="p-6 space-y-6">
-                  {category.fields.map((field, index) => (
+                  {category.fields.map((field: InfoField, index: number) => (
                     <div key={field.id} className="space-y-4">
                       {/* Field Header Row */}
                       <div className="grid grid-cols-12 gap-4 items-end">

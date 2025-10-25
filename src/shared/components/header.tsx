@@ -101,11 +101,10 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
 
   return (
     <motion.div
-      className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:z-30 lg:px-8 backdrop-blur-sm dark:backdrop-blur lg:left-72 xl:left-80 bg-white dark:bg-dark border-b border-base-content/10"
+      className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:z-30 lg:px-8 backdrop-blur-sm dark:backdrop-blur lg:left-72 xl:left-80 bg-white dark:bg-dark "
       ref={ref}
     >
       {/* <ModalUpdateTenant /> */}
-      <div className="absolute inset-x-0 top-full h-px transition bg-zinc-900/7.5 dark:bg-dark/7.5" />
       {/* <Search /> */}
       <div className="hidden lg:block lg:max-w-md lg:flex-auto"></div>
       <div className="flex items-center gap-5 lg:hidden">
@@ -144,7 +143,7 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
               </p>
             </div>
             <div className="w-8">
-              <div className="block-image block-square border border-white rounded-full overflow-hidden bg-secondary-900">
+              <div className="block-image block-square  rounded-full overflow-hidden bg-secondary-900">
                 <img
                   className="w-full h-full object-cover rounded"
                   src={
@@ -154,7 +153,7 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
                 />
               </div>
             </div>
-            <div className="py-5 border-l border-gray-500" />
+            <div className="py-5" />
             <div></div>
           </div>
           {/* Droplist */}

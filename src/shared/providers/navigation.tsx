@@ -5,10 +5,7 @@ import { ChallengeRouters, EventRouters, Routers } from "../components/router";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Svg from "../components/icon/svg";
-import {
-  NavigationGroupType,
-  NavigationItemType,
-} from "../components/navigation";
+import { NavigationGroupType, NavigationItemType } from "../components/navigation";
 
 // types
 export interface SectionItem {
@@ -45,15 +42,11 @@ function getCacheByName(name: string) {
 }
 function show(pathname: string) {
   const cache = getCacheByName("events");
-  const SUB_ROUTER_EVENT_DETAIL = Routers.EVENTS + "/[id]";
   if (cache.has(pathname)) return cache.get(pathname)!;
-  cache.set(
-    pathname,
-    [SUB_ROUTER_EVENT_DETAIL, Routers.EVENTS + "/edit"].some((v) =>
-      pathname.startsWith(v)
-    )
-  );
-  return cache.get(pathname)!;
+
+  const shouldShow = pathname.startsWith(Routers.EVENTS);
+  cache.set(pathname, shouldShow);
+  return shouldShow;
 }
 
 function showChanllenge(pathname: string) {
@@ -62,25 +55,19 @@ function showChanllenge(pathname: string) {
   if (cache.has(pathname)) return cache.get(pathname)!;
   cache.set(
     pathname,
-    [SUB_ROUTER_EVENT_DETAIL, Routers.CHALLENGE + "/edit"].some((v) =>
-      pathname.startsWith(v)
-    )
+    [SUB_ROUTER_EVENT_DETAIL, Routers.CHALLENGE + "/edit"].some((v) => pathname.startsWith(v))
   );
   return cache.get(pathname)!;
 }
 
-const NavigationStoreContext = createContext<StoreRootState | undefined>(
-  undefined
-);
+const NavigationStoreContext = createContext<StoreRootState | undefined>(undefined);
 
 export function NavigationProvider(props: { children?: React.ReactNode }) {
   //   const { t } = useTranslation("router");
   //   const { t: tCommon } = useTranslation();
   //   const { data: user } = useSession();
   //   const { permissions } = useRole();
-  const [store] = useState(() =>
-    createNavigationStore([] as NavigationGroupType[])
-  );
+  const [store] = useState(() => createNavigationStore([] as NavigationGroupType[]));
   const { setNavigations } = useStore(store);
   //   const { clear: clearTenant, selected } = useTenantStore((s) => s);
   //   const documents = useQuery(
@@ -121,13 +108,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
 
     const subNavs: NavigationItemType[] = [
       {
-        icon: (
-          <Svg
-            src="/icons/solar/Time/Calendar Add.svg"
-            width={16}
-            height={16}
-          />
-        ),
+        icon: <Svg src="/icons/solar/Time/Calendar Add.svg" width={16} height={16} />,
         title: "Thêm sự kiện",
         href: Routers.EVENTS_CREATE,
         show,
@@ -135,13 +116,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
       },
       {
         // icon: <BsPencilSquare />,
-        icon: (
-          <Svg
-            src="/icons/solar/Notes/Document Add.svg"
-            width={16}
-            height={16}
-          />
-        ),
+        icon: <Svg src="/icons/solar/Notes/Document Add.svg" width={16} height={16} />,
         title: "Cập nhật sự kiện",
         href: EventRouters.EDIT,
         params: true,
@@ -149,9 +124,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
         // permission: Permission.EventUpdate,
       },
       {
-        icon: (
-          <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />,
         title: "Thông tin chi tiết",
         href: EventRouters.DETAIL,
         params: true,
@@ -159,9 +132,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
         // permission: Permission.EventDetail,
       },
       {
-        icon: (
-          <Svg src="/icons/solar/Money/Bill List.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/solar/Money/Bill List.svg" width={16} height={16} />,
         title: "Quản lý đơn hàng",
         href: EventRouters.ORDER,
         params: true,
@@ -169,74 +140,12 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
         // permission: Permission.OrderList,
       },
       {
-        icon: <Svg src="/icons/gmail_groups.svg" width={16} height={16} />,
-        title: "Danh sách nhóm",
-        params: true,
-        show,
-        // permission: Permission.GroupList,
-        href: EventRouters.GROUP,
-      },
-      {
-        icon: (
-          <Svg src="/icons/solar/Sports/Swimming.svg" width={16} height={16} />
-        ),
-        title: "Danh sách VDV",
-        href: EventRouters.ATHLETE,
-        params: true,
-        show,
-        // permission: Permission.AthelteList,
-      },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Money/Ticket Sale.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Mã giảm giá",
-        href: EventRouters.VOUCHER,
-        params: true,
-        show,
-        // permission: Permission.PromotionList,
-      },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Users/Users Group Two Rounded.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Nhân sự phụ trách",
-        href: EventRouters.STAFF,
-        params: true,
-        show,
-        // permission: Permission.SeasonalPersonnelList,
-      },
-      {
-        icon: (
-          <Svg src="/icons/bi_ticket-perforated.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/bi_ticket-perforated.svg" width={16} height={16} />,
         title: "Danh sách vé",
         href: EventRouters.TICKET,
         params: true,
         show,
         // permission: Permission.TicketList,
-      },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Notes/Clipboard List.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Yêu cầu cần xử lý",
-        href: EventRouters.REPORT,
-        params: true,
-        show,
-        // permission: Permission.RequestList,
       },
     ].filter(checkLinkPermission);
 
@@ -250,9 +159,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
       //   permission: Permission.EventDetail,
       // },
       {
-        icon: (
-          <Svg src="/icons/solar/Money/Bill List.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/solar/Money/Bill List.svg" width={16} height={16} />,
         title: "Quản lý đơn hàng",
         href: EventRouters.ORDER,
         params: true,
@@ -260,82 +167,18 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
         // permission: Permission.OrderList,
       },
       {
-        icon: <Svg src="/icons/gmail_groups.svg" width={16} height={16} />,
-        title: "Danh sách nhóm",
-        params: true,
-        show,
-        // permission: Permission.GroupList,
-        href: EventRouters.GROUP,
-      },
-      {
-        icon: (
-          <Svg src="/icons/solar/Sports/Swimming.svg" width={16} height={16} />
-        ),
-        title: "Danh sách VDV",
-        href: EventRouters.ATHLETE,
-        params: true,
-        show,
-        // permission: Permission.AthelteList,
-      },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Money/Ticket Sale.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Mã giảm giá",
-        href: EventRouters.VOUCHER,
-        params: true,
-        show,
-        // permission: Permission.PromotionList,
-      },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Users/Users Group Two Rounded.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Nhân sự phụ trách",
-        href: EventRouters.STAFF,
-        params: true,
-        show,
-        // permission: Permission.SeasonalPersonnelList,
-      },
-      {
-        icon: (
-          <Svg src="/icons/bi_ticket-perforated.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/bi_ticket-perforated.svg" width={16} height={16} />,
         title: "Danh sách vé",
         href: EventRouters.TICKET,
         params: true,
         show,
         // permission: Permission.TicketList,
       },
-      {
-        icon: (
-          <Svg
-            src="/icons/solar/Notes/Clipboard List.svg"
-            width={16}
-            height={16}
-          />
-        ),
-        title: "Yêu cầu cần xử lý",
-        href: EventRouters.REPORT,
-        params: true,
-        show,
-        // permission: Permission.RequestList,
-      },
     ].filter(checkLinkPermission);
 
     const subNavsofChallenge: NavigationItemType[] = [
       {
-        icon: (
-          <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />,
         title: "Thêm thử thách",
         href: ChallengeRouters.CREATE,
         params: true,
@@ -343,9 +186,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
         // permission: Permission.ChallengeCreate,
       },
       {
-        icon: (
-          <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />
-        ),
+        icon: <Svg src="/icons/solar/Notes/Notebook.svg" width={16} height={16} />,
         title: "Cập nhật thử thách",
         href: ChallengeRouters.EDIT,
         params: true,
@@ -397,17 +238,6 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
     //   });
     // }
 
-    if (isDeveloper) {
-      //   documentations.push(
-      //     { title: "Thêm mới", href: "/admin/documentation/new", isExact: true },
-      //     { title: "Danh sách", href: "/admin/documentation/list", isExact: true }
-      //   );
-      configLinks.push(
-        { title: "Test", href: "/admin/test" },
-        { title: "Icon", href: "/admin/icons" }
-      );
-    }
-
     const navigation: Nav[] = [
       {
         title: "Doanh nghiệp",
@@ -420,10 +250,9 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
           },
           {
             title: "Sự kiện",
-            // permission: Permission.EventList,
             href: Routers.EVENTS,
             isExact: true,
-            // links: isSystemAdmin === false ? subNavsWithoutUpdate : subNavs,
+            links: subNavs,
           },
           // {
           //   title: "Quản lý thử thách",
@@ -456,7 +285,7 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
             href: Routers.RECONCILIATION,
             isExact: true,
           },
-        ].filter(checkLinkPermission),
+        ],
       },
       // { title: "Tài liệu", links: documentations },
       { title: "Cài đặt", links: configLinks },
@@ -481,13 +310,8 @@ export function NavigationProvider(props: { children?: React.ReactNode }) {
     </NavigationStoreContext.Provider>
   );
 }
-export function useNavigationStore<T = unknown>(
-  selector: (s: NavigationState) => T
-) {
+export function useNavigationStore<T = unknown>(selector: (s: NavigationState) => T) {
   const store = useContext(NavigationStoreContext);
-  if (!store)
-    throw new Error(
-      "useNavigationStore must be used within NavigationProvider"
-    );
+  if (!store) throw new Error("useNavigationStore must be used within NavigationProvider");
   return useStore(store, selector);
 }

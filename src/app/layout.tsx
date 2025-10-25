@@ -113,11 +113,7 @@ export default function RootLayout({
             <div className="lg:ml-72 xl:ml-80">
               <LayoutHeader />
 
-              <div
-                className={
-                  "relative px-4 pt-14 pb-6 md:pb-10 sm:px-6 lg:px-8  bg-gray-100 min-h-screen"
-                }
-              >
+              <div className={"relative pt-14 min-h-screen"}>
                 {/* {!tenant.selected && !skip ? (
             <div className="py-6">
               <div className="text-center">
@@ -151,7 +147,9 @@ export default function RootLayout({
               <p className="mt-3 fontb">Đang tải</p>
             </div>
           ) : ( */}
-                {children}
+                <div className="rounded-tl-4xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-2">
+                  {children}
+                </div>
                 {/* )} */}
               </div>
             </div>
