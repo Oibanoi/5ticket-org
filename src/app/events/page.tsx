@@ -18,8 +18,8 @@ import { LogoWithoutText } from "shared/components/icon/logo";
 import Svg from "shared/components/icon/svg";
 import { raceStatusOption, raceTypeOption } from "features/event/const";
 import contextMenu from "shared/components/context-menu";
-import Breadcrumbs from "shared/components/breadcrumbs";
-import PaginationSimple from "shared/components/pagination";
+import Breadcrumbs from "shared/components/ui/breadcrumbs";
+import PaginationSimple from "shared/components/layout/pagination";
 type RaceDetailList = {
   id: number;
   title: string;

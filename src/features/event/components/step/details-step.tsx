@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Input } from "antd";
 import { Controller, useFormContext } from "react-hook-form";
-import FileUploader from "components/ui/FileUploader";
+import FileUploader from "shared/components/ui/FileUploader";
 import Svg from "shared/components/icon/svg";
 import { useFileUpload } from "features/event/hooks/useFileUpload";
 

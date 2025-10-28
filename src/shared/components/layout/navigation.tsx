@@ -6,11 +6,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { JSX, PropsWithChildren, useRef } from "react";
-import { useNavigationStore } from "../providers/navigation";
-import useBoolean from "../hooks/useBoolean";
+import { useNavigationStore } from "../../providers/navigation";
+import useBoolean from "../../hooks/useBoolean";
 import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
-import { Routers } from "./router";
+import { Routers } from "../router";
 
 type Permission = number;
 export interface NavigationItemType {

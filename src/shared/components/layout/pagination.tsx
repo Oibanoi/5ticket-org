@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { PropsWithChildren, useCallback, useMemo } from "react";
-import Svg from "./icon/svg";
+import Svg from "../icon/svg";
 import useControlled from "shared/hooks/useControlled";
 import { calculatePaginations } from "shared/utilities/paging";
 

@@ -1,10 +1,10 @@
 "use client";
 import { NextPage } from "next";
 import Head from "next/head";
-import Breadcrumbs from "shared/components/breadcrumbs";
+import Breadcrumbs from "shared/components/ui/breadcrumbs";
 import { Routers } from "shared/components/router";
-import Overview from "components/events/overview";
-import Details from "components/events/details";
+import Overview from "features/event/components/step/overview-step";
+import Details from "features/event/components/step/details-step";
 import { useState, useCallback, useEffect } from "react";
 import "styles/globals.css";
 import clsx from "clsx";
@@ -18,9 +18,9 @@ import {
 } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
-import FormStep from "components/events/form-step";
-import StepTicket from "components/events/step-ticket";
-import StepConfig from "components/events/step-config";
+import FormStep from "features/event/components/step/form-step";
+import StepTicket from "features/event/components/step/ticket-step";
+import StepConfig from "features/event/components/step/config-step";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -5,7 +5,7 @@ import { ChallengeRouters, EventRouters, Routers } from "../components/router";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Svg from "../components/icon/svg";
-import { NavigationGroupType, NavigationItemType } from "../components/navigation";
+import { NavigationGroupType, NavigationItemType } from "../components/layout/navigation";
 
 // types
 export interface SectionItem {

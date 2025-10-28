@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Logo } from "./icon/logo";
+import { Logo } from "../icon/logo";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
 
