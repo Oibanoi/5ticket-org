@@ -42,11 +42,11 @@ export interface EventFormData {
   checkinTime?: Date;
   paymentMethod?: string;
   selectAllPayments?: boolean;
-  paymentOptions?: Record<string, boolean>;
+  payment_options?: string;
   wall_paper_url?: string;
   logo_url?: string;
   email_image_url?: string;
-  organizers: Array<{ name: string; logo?: File | null }>;
+  organizational_units: Array<{ name: string; logo?: File | null }>;
   descriptions: Array<{ title: string; content: string }>;
   shows: Array<{
     id: number;
@@ -139,18 +139,11 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
     checkinTime: new Date(),
     paymentMethod: "auto",
     selectAllPayments: false,
-    paymentOptions: {
-      payxQr: false,
-      payxAtm: false,
-      payxIntl: false,
-      bankQr: false,
-      atmCard: false,
-      creditCard: false,
-    },
+    payment_options: "",
     wall_paper_url: "",
     logo_url: "",
     email_image_url: "",
-    organizers: [{ name: "Công ty ABC", logo: null }],
+    organizational_units: [{ name: "Công ty ABC", logo: null }],
     descriptions: [
       {
         title: "Giới thiệu sự kiện",
@@ -203,7 +196,6 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
 
   const mapToForm = (src?: any): Partial<EventFormData> => {
     if (!src) return {};
-    console.log("Mapping source to form:", src);
     const out: Partial<EventFormData> = {};
 
     out.title = src.title ?? src.name ?? undefined;
@@ -221,23 +213,14 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
     out.changeInfoDeadline =
       parseDate(src.registration_change_start_date ?? src.changeInfoDeadline) ?? undefined;
     out.checkinTime = parseDate(src.checkin_start_date ?? src.checkinTime) ?? undefined;
-
-    try {
-      if (typeof src.payment_options === "string") {
-        out.paymentOptions = JSON.parse(src.payment_options || "{}");
-      } else if (src.paymentOptions) {
-        out.paymentOptions = src.paymentOptions;
-      }
-    } catch (e) {
-      out.paymentOptions = {};
-    }
+    out.payment_options = src.payment_options;
 
     out.logo_url = src.logo_url ?? "";
     out.wall_paper_url = src.wall_paper_url ?? "";
     out.email_image_url = src.email_image_url ?? "";
 
-    if (Array.isArray(src.organizers)) {
-      out.organizers = src.organizers.map((o: any) => ({
+    if (Array.isArray(src.organizational_units)) {
+      out.organizational_units = src.organizational_units.map((o: any) => ({
         name: o.name || o,
         logo: o.logo ?? null,
       }));
@@ -290,7 +273,6 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
     ...fallbackDefaults,
     ...(mapToForm(propDefaultValues) as EventFormData),
   };
-  console.log("Initial default values for form:", initialDefaults);
   const methods = useForm<EventFormData>({
     mode: "onChange",
     defaultValues: initialDefaults,
@@ -350,7 +332,6 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
   // Step submission handlers
   const onSubmitOverview = async (values: EventFormData): Promise<boolean> => {
     try {
-      console.log("Creating or updating event with values:", values, initialDefaults);
       const payload: CreateEventPayload = {
         id: eventId ? parseInt(eventId, 10) : undefined,
         name: values.title,
@@ -371,11 +352,11 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
         transfer_end_date: values.endDate?.toISOString() || "",
         checkin_start_date: values.checkinTime?.toISOString() || "",
         checkin_end_date: values.endDate?.toISOString() || "",
-        payment_options: JSON.stringify(values.paymentOptions || {}),
+        payment_options: values.payment_options || "",
         logo_url: initialDefaults.logo_url || "",
         wall_paper_url: initialDefaults.wall_paper_url || "",
         email_image_url: initialDefaults.email_image_url || "",
-        "organizational units": JSON.stringify(initialDefaults.organizers || []),
+        organizational_units: JSON.stringify(initialDefaults.organizational_units || []),
         description: JSON.stringify(initialDefaults.descriptions || []),
         is_enable: true,
         base_price: 0,
@@ -445,11 +426,11 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
         transfer_end_date: values.endDate?.toISOString() || "",
         checkin_start_date: values.checkinTime?.toISOString() || "",
         checkin_end_date: values.endDate?.toISOString() || "",
-        payment_options: JSON.stringify(values.paymentOptions || {}),
+        payment_options: values.payment_options || "",
         logo_url: values.logo_url || "",
         wall_paper_url: values.wall_paper_url || "",
         email_image_url: values.email_image_url || "",
-        "organizational units": JSON.stringify(values.organizers || []),
+        organizational_units: JSON.stringify(values.organizational_units || []),
         description: JSON.stringify(values.descriptions || []),
         is_enable: true,
         base_price: 0,

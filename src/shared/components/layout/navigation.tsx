@@ -162,14 +162,6 @@ function NavigationGroup({
                     link.links &&
                     pathname.startsWith(link.href) &&
                     !pathname.startsWith("/events/create");
-                  console.log("Sublinks condition:", {
-                    title: link.title,
-                    hasLinks: !!link.links,
-                    isMatchedRoot,
-                    isSublinksMatch,
-                    pathname,
-                    href: link.href,
-                  });
                   return isSublinksMatch;
                 })() && (
                   <AnimatePresence mode="popLayout" initial={false}>

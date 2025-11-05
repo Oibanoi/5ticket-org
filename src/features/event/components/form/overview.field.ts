@@ -37,24 +37,38 @@ export const overviewFields = {
       placeholder: "Nhập địa điểm",
     },
     {
-      group: "row",
-      fields: [
-        {
-          name: "hotline",
-          label: "Hotline",
-          type: "input",
-          placeholder: "0987654321",
-        },
-        {
-          name: "eventCode",
-          label: "Mã sự kiện",
-          type: "input",
-          required: true,
-          placeholder: "6 kí tự",
-          props: { maxLength: 6 },
-        },
-      ],
+      name: "hotline",
+      label: "Hotline",
+      type: "input",
+      placeholder: "0987654321",
     },
+    {
+      name: "eventCode",
+      label: "Mã sự kiện",
+      type: "input",
+      required: true,
+      placeholder: "6 kí tự",
+      props: { maxLength: 6 },
+    },
+    // {
+    //   group: "row",
+    //   fields: [
+    //     {
+    //       name: "hotline",
+    //       label: "Hotline",
+    //       type: "input",
+    //       placeholder: "0987654321",
+    //     },
+    //     {
+    //       name: "eventCode",
+    //       label: "Mã sự kiện",
+    //       type: "input",
+    //       required: true,
+    //       placeholder: "6 kí tự",
+    //       props: { maxLength: 6 },
+    //     },
+    //   ],
+    // },
     {
       name: "slug",
       label: "Slug của sự kiện",
@@ -79,7 +93,10 @@ export const overviewFields = {
   payment: {
     radio: {
       name: "paymentMethod",
-      options: [{ value: "auto", label: "Thanh toán tự động qua trung gian thanh toán" }],
+      options: [
+        { value: "auto", label: "Thanh toán tự động qua trung gian thanh toán" },
+        { value: "personal", label: "Thanh toán qua tài khoản cá nhân" },
+      ],
       description: "Vé sẽ được gửi về tài khoản của người tổ chức khi thanh toán thành công",
     },
     selectAll: {

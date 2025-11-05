@@ -1,26 +1,76 @@
-import React from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { Button } from "antd";
-import RenderField from "../RenderField";
+import React, { useEffect, useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { Button, Input } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import InputMedia from "shared/components/input/input-media";
 import clsx from "clsx";
 import ModalSelectImage from "shared/components/modal/modal-image";
 import Svg from "shared/components/icon/svg";
+import RenderField from "../RenderField";
+
+type Organizer = {
+  name: string;
+  logo: string | null;
+};
 
 const Details: React.FC = () => {
-  const methods = useFormContext();
-  const organizersField = useFieldArray({ name: "organizers" });
+  const { getValues, setValue, formState, register, watch } = useFormContext();
+
   const descriptionsField = useFieldArray({ name: "descriptions" });
+  const [organizationalUnits, setOrganizationalUnits] = useState<Organizer[]>([]);
+  const initValues = watch("organizational_units");
+  // ✅ Lấy giá trị ban đầu từ form (string → object[])
+  useEffect(() => {
+    const init = initValues || getValues("organizational_units");
+    console.log("init", init);
+    try {
+      const parsed = init ? JSON.parse(init) : [];
+      if (Array.isArray(parsed)) {
+        setOrganizationalUnits(parsed);
+      } else {
+        setOrganizationalUnits([]);
+        setValue("organizational_units", "[]");
+      }
+    } catch {
+      setOrganizationalUnits([]);
+      setValue("organizational_units", "[]");
+    }
+  }, [initValues, getValues, setValue]);
+
+  // ✅ Đồng bộ state → form field (string)
+  const updateFormValue = (list: Organizer[]) => {
+    setOrganizationalUnits(list);
+    console.log("updateFormValue", JSON.stringify(list));
+    setValue("organizational_units", JSON.stringify(list));
+  };
+
+  // ✅ Thêm / xóa / sửa đơn vị
+  const handleAdd = () => updateFormValue([...organizationalUnits, { name: "", logo: null }]);
+  const handleRemove = (index: number) =>
+    updateFormValue(organizationalUnits.filter((_, i) => i !== index));
+
+  const handleChangeName = (index: number, name: string) => {
+    const newList = organizationalUnits.map((o, i) => (i === index ? { ...o, name } : o));
+    updateFormValue(newList);
+  };
+
+  const handleChangeLogo = (index: number, logo: string) => {
+    const newList = organizationalUnits.map((o, i) => (i === index ? { ...o, logo } : o));
+    updateFormValue(newList);
+  };
+
+  // ✅ Hàm chọn ảnh qua modal
   const insertImage = () => {
     ModalSelectImage.open((file) => {
-      const { onChange, name } = methods.register("fileName");
-      onChange({ target: { value: file, name } });
+      // const { onChange, name } = methods.register("fileName");
+      // onChange({ target: { value: file, name } });
     });
   };
+
   return (
     <div className="text-sm space-y-4">
       <ModalSelectImage />
+
       {/* Hình ảnh sự kiện + Ảnh email */}
       <div className="bg-white px-6 py-4 rounded-md">
         <div className="flex flex-wrap -mx-6">
@@ -36,9 +86,9 @@ const Details: React.FC = () => {
                 del
                 className={clsx(
                   "w-full h-[278px] bg-gray-200 rounded border-2 border-dashed border-gray-300 flex items-center justify-center",
-                  methods.formState.errors.logo_url && "border-red-500"
+                  formState.errors.logo_url && "border-red-500"
                 )}
-                inputProps={methods.register(`logo_url`)}
+                inputProps={register(`logo_url`)}
                 desc="Thêm mới logo sự kiện 200 x 200px (Tối đa 2MB)"
               />
             </div>
@@ -56,9 +106,9 @@ const Details: React.FC = () => {
                 del
                 className={clsx(
                   "w-full h-[278px] bg-gray-200 rounded border-2 border-dashed border-gray-300 flex items-center justify-center",
-                  methods.formState.errors.wall_paper_url && "border-red-500"
+                  formState.errors.wall_paper_url && "border-red-500"
                 )}
-                inputProps={methods.register(`wall_paper_url`)}
+                inputProps={register(`wall_paper_url`)}
                 desc="Kích thước tối ưu 1560x600px (Tối đa 3MB)"
               />
             </div>
@@ -74,11 +124,8 @@ const Details: React.FC = () => {
                 role="button"
                 del
                 modal
-                className={clsx(
-                  "w-full h-[278px] bg-gray-200 rounded border-2 border-dashed border-gray-300 flex items-center justify-center"
-                  // methods.formState.errors.race_extension?.content_image && "border-red-500"
-                )}
-                inputProps={methods.register(`email_image_url`)}
+                className="w-full h-[278px] bg-gray-200 rounded border-2 border-dashed border-gray-300 flex items-center justify-center"
+                inputProps={register(`email_image_url`)}
                 desc="Thêm mới ảnh nội dung email (Tối đa 3MB)"
               />
             </div>
@@ -86,18 +133,18 @@ const Details: React.FC = () => {
         </div>
       </div>
 
-      {/* Đơn vị tổ chức */}
+      {/* ✅ Đơn vị tổ chức */}
       <div className="bg-white py-4 px-6 rounded-md">
         <div className="mb-6">
           <div className="font-bold mb-4">Đơn vị tổ chức</div>
           <div className="space-y-4">
-            {organizersField.fields.map((field, index) => (
-              <div key={field.id} className="flex flex-wrap gap-2 items-center">
+            {organizationalUnits.map((org, index) => (
+              <div key={index} className="flex flex-wrap gap-2 items-center">
                 <Button
                   type="text"
                   danger
                   icon={<DeleteOutlined />}
-                  onClick={() => organizersField.remove(index)}
+                  onClick={() => handleRemove(index)}
                   className="flex-shrink-0"
                 />
                 <div className="flex items-center gap-x-8">
@@ -105,49 +152,36 @@ const Details: React.FC = () => {
                     <div className="text-xs mr-5 font-medium">
                       Tên đơn vị tổ chức {index + 1} <span className="text-red-500">*</span>
                     </div>
-                    <div className="relative">
-                      <RenderField
-                        name={`organizers.${index}.name`}
-                        type="input"
-                        placeholder="Tên đơn vị"
-                        required
-                      />
-                    </div>
+                    <Input
+                      placeholder="Tên đơn vị"
+                      value={org.name}
+                      onChange={(e) => handleChangeName(index, e.target.value)}
+                    />
                   </div>
-                  <div className="relative w-56">
-                    <Button
-                      // outline
-                      // variant="none"
-                      // className={clsx(
-                      //   "btn-xs gap-x-2 font-bold flex",
-                      //   get(methods.formState.errors, fileName) && "text-red-500"
-                      // )}
-                      onClick={insertImage}
-                    >
+                  <div className="relative w-56 flex items-center gap-2">
+                    <Button onClick={() => insertImage()}>
                       <Svg src="/icons/upload.svg" width={24} height={24} />
-                      <span className="label-text text-current" aria-required>
-                        Thêm logo
-                      </span>
+                      <span className="label-text text-current">Thêm logo</span>
                     </Button>
+                    {org.logo && (
+                      <img
+                        src={org.logo}
+                        alt="Logo"
+                        className="w-10 h-10 object-contain rounded border"
+                      />
+                    )}
                   </div>
                 </div>
-                {organizersField.fields.length === index + 1 && (
-                  <Button
-                    type="dashed"
-                    icon={<PlusOutlined />}
-                    onClick={() => organizersField.append({ name: "", logo: null })}
-                  >
+                {organizationalUnits.length === index + 1 && (
+                  <Button type="dashed" icon={<PlusOutlined />} onClick={handleAdd}>
                     Thêm đơn vị tổ chức
                   </Button>
                 )}
               </div>
             ))}
-            {!organizersField.fields.length && (
-              <Button
-                type="dashed"
-                icon={<PlusOutlined />}
-                onClick={() => organizersField.append({ name: "", logo: null })}
-              >
+
+            {!organizationalUnits.length && (
+              <Button type="dashed" icon={<PlusOutlined />} onClick={handleAdd}>
                 Thêm đơn vị tổ chức
               </Button>
             )}

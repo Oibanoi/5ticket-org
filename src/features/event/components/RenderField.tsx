@@ -43,29 +43,31 @@ const RenderField: React.FC<FieldConfig> = ({
   const showError = Boolean(error);
 
   return (
-    <div className="space-y-1">
+    <div className="flex items-center">
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="w-2/5 text-right text-xs label-text pr-4">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => {
-          const fieldElement = renderField(type, {
-            ...field,
-            ...props,
-            type,
-            placeholder,
-            options,
-            status: showError ? "error" : "",
-          });
-          return fieldElement || <div />;
-        }}
-      />
-      {description && <div className="text-xs text-gray-400 mt-1">{description}</div>}
-      {showError && <div className="text-red-500 text-xs mt-1">{error?.message as string}</div>}
+      <div className="w-3/5">
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => {
+            const fieldElement = renderField(type, {
+              ...field,
+              ...props,
+              type,
+              placeholder,
+              options,
+              status: showError ? "error" : "",
+            });
+            return fieldElement || <div />;
+          }}
+        />
+        {description && <div className="text-xs text-gray-400 mt-1">{description}</div>}
+        {showError && <div className="text-red-500 text-xs mt-1">{error?.message as string}</div>}
+      </div>
     </div>
   );
 };

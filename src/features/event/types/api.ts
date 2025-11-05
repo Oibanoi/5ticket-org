@@ -22,7 +22,7 @@ export interface CreateEventPayload {
   logo_url: string;
   wall_paper_url: string;
   email_image_url: string;
-  "organizational units": string;
+  organizational_units: string;
   description: string;
   is_enable: boolean;
   base_price: number;

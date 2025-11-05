@@ -10,7 +10,7 @@ export const detailsSchema = Joi.object({
   email_image_url: Joi.array().items(Joi.object()).optional(),
 
   // Organizers
-  organizers: Joi.array()
+  "organizational units": Joi.array()
     .items(
       Joi.object({
         name: Joi.string().required().messages({

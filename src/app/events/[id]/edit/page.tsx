@@ -9,13 +9,6 @@ import { getEventById, GetEventResponse } from "features/event/services/getEvent
 
 // Transform API response to form data
 const transformEventData = (apiData: GetEventResponse): EventFormData => {
-  let paymentOptions = {};
-  try {
-    paymentOptions = JSON.parse(apiData.payment_options || "{}");
-  } catch (error) {
-    console.error("Error parsing payment_options:", error);
-  }
-
   return {
     name: apiData.name,
     title: apiData.name,
@@ -36,11 +29,11 @@ const transformEventData = (apiData: GetEventResponse): EventFormData => {
     checkinTime: new Date(apiData.checkin_start_date),
     paymentMethod: "auto",
     selectAllPayments: false,
-    paymentOptions: paymentOptions as Record<string, boolean>,
+    payment_options: apiData.payment_options,
     wall_paper_url: apiData.wall_paper_url,
     logo_url: apiData.logo_url,
     email_image_url: apiData.email_image_url,
-    organizers: [{ name: "", logo: null }],
+    organizational_units: [{ name: "", logo: null }],
     descriptions: [{ title: "", content: "" }],
     shows: [
       {
@@ -107,7 +100,6 @@ const PageEditEvent: NextPage = () => {
   }, [error]);
 
   const eventData = apiData ? transformEventData(apiData) : null;
-  console.log("Loaded event data for editing:", eventData);
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

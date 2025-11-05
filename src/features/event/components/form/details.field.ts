@@ -22,9 +22,9 @@ export const detailsFields = {
     },
   ],
 
-  organizers: [
+  organizational_units: [
     {
-      name: "organizers",
+      name: "organizational_units",
       label: "Đơn vị tổ chức",
       type: "dynamic",
       fields: [
