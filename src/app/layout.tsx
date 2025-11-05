@@ -10,6 +10,7 @@ import { Navigation } from "shared/components/layout/navigation";
 import LayoutHeader from "shared/components/layout/layout-header";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import QueryProvider from "shared/providers/QueryProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -100,6 +101,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
           <NavigationProvider>
+            <Toaster position="top-right" />
             <style precedence="default" href="__layout-inline-styles">
               {/* {`
               body {

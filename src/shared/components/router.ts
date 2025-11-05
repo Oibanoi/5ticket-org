@@ -27,7 +27,7 @@ export const Routers = {
   CONFIGS: "/admin/configs",
 };
 export const EventRouters = {
-  EDIT: baseURL + "/edit/[id]",
+  EDIT: baseURL + "/[id]/edit",
   OVERVIEW: baseURL + "/[id]",
   DETAIL: baseURL + "/[id]/detail",
   ORDER: baseURL + "/[id]/order",
