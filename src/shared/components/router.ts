@@ -2,10 +2,10 @@ const baseURL = "/events";
 export const Routers = {
   HOME: "/",
 
-  LOGIN: "/auth/login",
-  REGISTER: "/auth/register",
-  FORGOT: "/auth/forgot",
-  RESET: "/auth/reset",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FORGOT: "/forgot",
+  RESET: "/reset",
 
   // Events/races
   EVENTS: baseURL,

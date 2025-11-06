@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# idea
+.idea
+.vscode
+.cursorrules
+.cursorignore
+
+# cursor
+.cursor
+.cursorignore
+.cursorrules
+.cursorignore
+

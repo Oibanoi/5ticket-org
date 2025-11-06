@@ -10,6 +10,7 @@ import { Navigation } from "shared/components/layout/navigation";
 import LayoutHeader from "shared/components/layout/layout-header";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import QueryProvider from "shared/providers/QueryProvider";
+import { SessionProvider } from "shared/providers/SessionProvider";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -99,9 +100,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: modeScript }} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          <NavigationProvider>
-            <Toaster position="top-right" />
+        <Toaster position="top-right" />
+        <SessionProvider>
+          <QueryProvider>
+            <NavigationProvider>
             <style precedence="default" href="__layout-inline-styles">
               {/* {`
               body {
@@ -112,51 +114,10 @@ export default function RootLayout({
             `} */}
             </style>
 
-            <div className="lg:ml-72 xl:ml-80">
-              <LayoutHeader />
-
-              <div className={"relative pt-14 min-h-screen"}>
-                {/* {!tenant.selected && !skip ? (
-            <div className="py-6">
-              <div className="text-center">
-                <Logo height={40} className="fill-secondary-600 inline-block" />
-                <p className="text-center">Select an organization</p>
-              </div>
-              {tenantApprove ? (
-                <div className="mt-4">
-                  <div
-                    data-test="tenant-selectors"
-                    className="text-center mt-3 xl:mt-10 space-y-3"
-                  >
-                    {tenantApprove.map((item) => {
-                      return (
-                        <Button
-                          key={"tenant_" + item.id}
-                          className="block w-full xl:w-1/3 py-3 px-3 rounded-xl mx-auto h-auto"
-                          onClick={() => tenant.set(item)}
-                        >
-                          <p className="font-bold">{item.name}</p>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          ) : roles.isLoading ? (
-            <div className="fixed inset-0 flex items-center justify-center flex-col">
-              <Logo height={40} className="fill-secondary-600" />
-              <p className="mt-3 fontb">Đang tải</p>
-            </div>
-          ) : ( */}
-                <div className="rounded-tl-4xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-2">
-                  {children}
-                </div>
-                {/* )} */}
-              </div>
-            </div>
-          </NavigationProvider>
-        </QueryProvider>
+            {children}
+            </NavigationProvider>
+          </QueryProvider>
+        </SessionProvider>
       </body>
     </html>
   );

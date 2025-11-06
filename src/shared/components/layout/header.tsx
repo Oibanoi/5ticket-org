@@ -52,8 +52,8 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
   const [isDroplistVisible, setIsDroplistVisible] = useState(false);
   const isLoading = useBoolean();
   const router = useRouter();
-  // const { data } = useSession();
-  // const user = data!.user;
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   // const tenant = useTenantStore((s) => s.selected);
   const [infoCompany, setInfoCompany] = useState<{
@@ -126,61 +126,99 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
         <div className="flex gap-4">
           <ModeToggle />
         </div>
-        <div
-          className="hidden min-[416px]:contents relative tenant hover:tenant-droplist"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <div className="flex items-center gap-x-3 text-zinc-600 dark:text-zinc-400 cursor-pointer">
-            <div className="text-right">
-              <p className="text-sm font-bold leading-5 truncate">
-                {/* {user.name} */}
-                Haha
-              </p>
-              <p className="text-xs leading-3">
-                {/* {getRoleName(user.role.name)} */}
-                Role
-              </p>
-            </div>
-            <div className="w-8">
-              <div className="block-image block-square  rounded-full overflow-hidden bg-secondary-900">
-                <img
-                  className="w-full h-full object-cover rounded"
-                  src={
-                    "https://imagedelivery.net/5ejkUOtsMH5sf63fw6q33Q/1a091d0e-3d38-4da3-063a-4833e08cf500/thumbnail"
-                  }
-                  // alt={user.name || user.email}
-                />
+        {status === "authenticated" && user ? (
+          <div
+            className="hidden min-[416px]:contents relative tenant hover:tenant-droplist"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="flex items-center gap-x-3 text-zinc-600 dark:text-zinc-400 cursor-pointer">
+              <div className="text-right">
+                <p className="text-sm font-bold leading-5 truncate max-w-32">
+                  {user.name || user.email || "User"}
+                </p>
+                <p className="text-xs leading-3 capitalize">
+                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() || "User"}
+                </p>
+              </div>
+              <div className="w-8">
+                <div className="block-image block-square rounded-full overflow-hidden bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  {user.image ? (
+                    <img
+                      className="w-full h-full object-cover rounded-full"
+                      src={user.image}
+                      alt={user.name || user.email || "User"}
+                    />
+                  ) : (
+                    <span className="text-white font-bold text-sm">
+                      {(user.name || user.email || "U").charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="py-5" />
-            <div></div>
-          </div>
-          {/* Droplist */}
-          {infoCompany !== undefined && (
+            {/* Droplist */}
             <div
               className={clsx(
-                "tenant-droplist absolute right-10 top-10 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md py-2 font-semibold",
+                "tenant-droplist absolute right-0 top-12 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-lg py-2 border border-gray-200 dark:border-gray-700 z-50",
                 isDroplistVisible ? "block" : "hidden"
               )}
             >
-              <p
-                className="cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 space-x-2 flex"
-                // onClick={() => ModalUpdateTenant.open()}
-              >
-                <Svg src="/icons/akar-icons_info.svg" width={24} height={24} />
-                <span>Thông tin người bán</span>
-              </p>
-              <p
-                className="cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 flex space-x-2"
-                onClick={logout}
-              >
-                <Svg src="/icons/ic_outline-logout.svg" width={24} height={24} />
-                <span>Đăng xuất</span>
-              </p>
+              {/* User Info Section */}
+              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  {user.name || "Người dùng"}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  {user.email}
+                </p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1 capitalize">
+                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() || "User"}
+                </p>
+              </div>
+
+              {/* Menu Items */}
+              <div className="py-1">
+                <button
+                  className="w-full cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
+                  onClick={() => router.push("/profile")}
+                >
+                  <Svg src="/icons/akar-icons_info.svg" width={16} height={16} />
+                  <span>Thông tin cá nhân</span>
+                </button>
+                
+                <button
+                  className="w-full cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
+                  onClick={() => router.push("/settings")}
+                >
+                  <Svg src="/icons/settings.svg" width={16} height={16} />
+                  <span>Cài đặt</span>
+                </button>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                
+                <button
+                  className="w-full cursor-pointer px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
+                  onClick={logout}
+                  disabled={isLoading.value}
+                >
+                  <Svg src="/icons/ic_outline-logout.svg" width={16} height={16} />
+                  <span>{isLoading.value ? "Đang đăng xuất..." : "Đăng xuất"}</span>
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          // Show login button when not authenticated
+          <div className="flex items-center">
+            <Link
+              href={Routers.LOGIN}
+              className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 px-4 py-2 rounded-lg border border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+            >
+              Đăng nhập
+            </Link>
+          </div>
+        )}
       </div>
     </motion.div>
   );
