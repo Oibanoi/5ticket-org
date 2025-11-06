@@ -205,7 +205,13 @@ const StepTicket: React.FC = () => {
                         <Controller
                           name={`shows.${showIndex}.tickets.${ticketIndex}.name`}
                           control={control}
-                          render={({ field }) => <Input {...field} placeholder="Nhập tên vé" />}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              placeholder="Nhập tên vé"
+                              defaultValue={ticketIndex === 0 ? "Vé thường" : ""}
+                            />
+                          )}
                         />
                       </div>
                       <div className="flex items-end gap-4">
@@ -216,7 +222,13 @@ const StepTicket: React.FC = () => {
                           <Controller
                             name={`shows.${showIndex}.tickets.${ticketIndex}.uniqueCode`}
                             control={control}
-                            render={({ field }) => <Input {...field} placeholder="Nhập mã" />}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                placeholder="Nhập mã"
+                                defaultValue={ticketIndex === 0 ? "TICKET01" : ""}
+                              />
+                            )}
                           />
                         </div>
                         <Button icon={<UpOutlined />} type="text" />
@@ -287,6 +299,7 @@ const StepTicket: React.FC = () => {
                               type="number"
                               prefix={<span className="text-red-500">*</span>}
                               className="mt-9"
+                              defaultValue={ticketIndex === 0 ? "100" : ""}
                             />
                           )}
                         />
@@ -304,6 +317,7 @@ const StepTicket: React.FC = () => {
                               type="number"
                               prefix={<span className="text-red-500">*</span>}
                               className="mt-9"
+                              defaultValue={ticketIndex === 0 ? "1" : ""}
                             />
                           )}
                         />
@@ -321,6 +335,7 @@ const StepTicket: React.FC = () => {
                               type="number"
                               prefix={<span className="text-red-500">*</span>}
                               className="mt-9"
+                              defaultValue={ticketIndex === 0 ? "10" : ""}
                             />
                           )}
                         />
@@ -368,21 +383,27 @@ const StepTicket: React.FC = () => {
                     </div>
 
                     {/* Description and Image Upload */}
-                    <div className="grid grid-cols-[1fr,300px] gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Mô tả vé
-                        </label>
+                    <div className="flex gap-4 items-start">
+                      <div className="flex-1">
                         <Controller
                           name={`shows.${showIndex}.tickets.${ticketIndex}.description`}
                           control={control}
                           render={({ field }) => (
-                            <TextArea {...field} rows={4} placeholder="Nhập mô tả" />
+                            <TextArea
+                              {...field}
+                              placeholder="Nhập mô tả"
+                              defaultValue={
+                                ticketIndex === 0 ? "Vé thường dành cho tất cả khách hàng" : ""
+                              }
+                              autoSize={false}
+                              className="h-[180px]"
+                            />
                           )}
                         />
                       </div>
-                      <div>
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+
+                      <div className="w-[300px]">
+                        <div className=" flex flex-col justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
                           <Button icon={<PlusOutlined />} type="default" size="large">
                             Thêm ảnh vé
                           </Button>

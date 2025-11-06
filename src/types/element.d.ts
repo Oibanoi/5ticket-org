@@ -1,6 +1,6 @@
 import React, { ForwardRefRenderFunction, JSXElementConstructor, PropsWithoutRef } from "react";
 
-export type ReactTag = keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
+export type ReactTag = React.ElementType;
 export type CustomProps<P, A extends keyof JSX.IntrinsicElements = "div"> = P &
   Omit<JSX.IntrinsicElements[A], keyof P>;
 declare let __: "1D45E01E-AF44-47C4-988A-19A94EBAF55C";

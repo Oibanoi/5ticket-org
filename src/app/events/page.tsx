@@ -18,8 +18,9 @@ import { LogoWithoutText } from "shared/components/icon/logo";
 import Svg from "shared/components/icon/svg";
 import { raceStatusOption, raceTypeOption } from "features/event/const";
 import contextMenu from "shared/components/context-menu";
-import Breadcrumbs from "shared/components/breadcrumbs";
-import PaginationSimple from "shared/components/pagination";
+import Breadcrumbs from "shared/components/ui/breadcrumbs";
+import PaginationSimple from "shared/components/layout/pagination";
+import { EventListItem, getAllEvent } from "features/event/services/getEvent";
 type RaceDetailList = {
   id: number;
   title: string;
@@ -33,7 +34,7 @@ type RaceDetailList = {
   race_type?: "run" | "night" | "fun" | string;
   status?: "published" | "draft" | "finished" | string;
 };
-const columnHelper = createColumnHelper<RaceDetailList>();
+const columnHelper = createColumnHelper<EventListItem>();
 const race: {
   data: { list: RaceDetailList[]; totalPages: number; totalItems: number } | undefined;
   isFetching?: boolean;
@@ -86,7 +87,7 @@ const race: {
   isFetching: false,
 };
 const columns = [
-  columnHelper.accessor("title", {
+  columnHelper.accessor("name", {
     cell({ getValue, row }) {
       return (
         <div className="flex">
@@ -95,7 +96,7 @@ const columns = [
               <img
                 key={`race_img_${row.id}`}
                 src={row.original.logo_url || "/icon.svg"}
-                alt={row.original.title}
+                alt={row.original.name}
                 className="rounded-md w-full h-full bg-gray-300 center-by-grid text-center text-xs object-cover"
               />
             ) : (
@@ -111,12 +112,7 @@ const columns = [
             <div className="text-xs flex gap-x-1 items-center">
               <Svg src="/icons/location.svg" width={16} height={16} />
               <p className="truncate">
-                {[
-                  row.original.location,
-                  row.original.ward,
-                  row.original.district,
-                  row.original.province,
-                ]
+                {[row.original.location, row.original.ward, row.original.province]
                   .filter(Boolean)
                   .join(", ")}
               </p>
@@ -131,11 +127,11 @@ const columns = [
     },
     meta: { className: "rounded-l-lg py-3 px-3 whitespace-nowrap bg-white w-full" },
   }),
-  columnHelper.accessor("event_start_date", {
+  columnHelper.accessor("start_date", {
     cell: ({ getValue }) => <div className="text-sm">{dayjs(getValue()).format("DD/MM/YYYY")}</div>,
     meta: { className: "py-2 px-3 bg-white w-full xl:w-auto" },
   }),
-  columnHelper.accessor("race_type", {
+  columnHelper.accessor("event_type", {
     cell: ({ getValue }) => {
       //   const raceConfig = raceTypeOption.byKey(getValue());
       return (
@@ -182,7 +178,7 @@ export default function PageEvents() {
   //   const { t } = useTranslation("router");
   const [query, setQuery] = useState("");
   // const [status, setStatus] = useState<any>(null);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState({ pageIndex: 1, pageSize: 10 });
   //   const selected = useTenantStore((s) => s.selected)!;
   //   const queryClient = useQueryClient();
 
@@ -194,11 +190,16 @@ export default function PageEvents() {
   //     is_virtual: false,
   //   };
 
-  //   const race = useQuery([Race.PLURAL, searchParams, pagination], () =>
-  //     Race.list(searchParams, pagination)
-  //   );
+  const race = useQuery({
+    queryKey: ["events", pagination],
+    queryFn: () =>
+      getAllEvent({
+        pageNo: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+      }),
+  });
   const table = useReactTable({
-    data: race.data?.list || [],
+    data: race.data?.content || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     state: { pagination },
@@ -268,11 +269,11 @@ export default function PageEvents() {
       </section>
 
       <section className="relative overflow-hidden xl:overflow-auto">
-        {/* {race.isFetching && (
+        {race.isFetching && (
           <div className="absolute inset-0 center-by-grid bg-gradient-radial from-white to-transparent">
             <Spin />
           </div>
-        )} */}
+        )}
         <table className="block xl:table w-full mt-4 border-separate border-spacing-y-4 overflow-hidden">
           <tbody className="block xl:table-row-group space-y-4 xl:space-y-0 w-full">
             {table.getRowModel().rows.length ? (
@@ -314,7 +315,7 @@ export default function PageEvents() {
           pageIndex={pagination.pageIndex}
           totalPage={race.data?.totalPages}
           pageSize={pagination.pageSize}
-          totalItems={race.data?.totalItems}
+          totalItems={race.data?.totalElements}
         />
       </section>
     </>
