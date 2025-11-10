@@ -51,7 +51,7 @@ export function UserMenu() {
     <Dropdown menu={{ items }} placement="bottomRight" arrow>
       <div className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity">
         <Avatar 
-          src={user.avatar} 
+          src={user.image} 
           icon={<UserOutlined />}
           size="default"
         />

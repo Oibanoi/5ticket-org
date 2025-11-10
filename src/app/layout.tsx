@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "styles/globals.css";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { Toaster } from "react-hot-toast";
 import { NavigationProvider } from "shared/providers/navigation";
-import { Logo } from "shared/components/icon/logo";
-import { Header } from "shared/components/layout/header";
-import { Navigation } from "shared/components/layout/navigation";
-import LayoutHeader from "shared/components/layout/layout-header";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import QueryProvider from "shared/providers/QueryProvider";
 import { SessionProvider } from "shared/providers/SessionProvider";
-import { Toaster } from "react-hot-toast";
+import "styles/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,49 +1,53 @@
 "use client";
-
-import { useState } from "react";
-import { useForm, SubmitHandler, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Checkbox } from "antd";
+import { useDevelopmentMode } from "features/auth/components/useDevelopmentMode";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-import { Button } from "components/button/button";
-import Svg from "shared/components/icon/svg";
-import InputWithIcons from "components/input/input-with-icons";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { FormField } from "shared/components/form/FormField";
+import { Logo } from "shared/components/icon/logo";
 import { Routers } from "shared/components/router";
-import { loginSchema, LoginFormData } from "../schemas/login.schema";
-import { env } from "shared/lib/env";
+import z from "zod";
+import { LoginHeader } from "./LoginHeader";
 
-interface LoginFormProps {
-  onSuccess?: () => void;
-  onError?: (error: string) => void;
-}
 
-export function LoginForm({ onSuccess, onError }: LoginFormProps) {
+const loginSchema = z.object({
+  email: z.string().min(1, "Vui lòng nhập tên đăng nhập hoặc email"),
+  password: z.string()
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+    .min(1, "Vui lòng nhập mật khẩu"),
+  savePassword: z.boolean().optional(),
+  isDevelopment: z.boolean().optional(),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+function LoginForm() {
   const router = useRouter();
-  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-    setError,
     control,
+    getValues,
+    setValue,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    mode: "onChange",
-    reValidateMode: "onSubmit",
-    defaultValues: {
-      email: "",
-      password: "",
-      isDevelopment: env.NEXT_PUBLIC_APP_ENV === "development",
-      savePassword: false,
-    },
+    mode: "onTouched",
   });
 
-  const isDev = useWatch({ control, name: "isDevelopment" });
+  useDevelopmentMode({
+    getValues,
+    setValue,
+    fieldName: "isDevelopment",
+  });
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (values) => {
+  const onSubmit = async (values: LoginFormData) => {
+    setIsSubmitting(true);
     try {
       router.prefetch(Routers.EVENTS);
 
@@ -55,12 +59,12 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
         redirect: false,
       });
 
-      if (response?.ok && response.status === 200) {
-        onSuccess?.();
-        router.replace(Routers.EVENTS);
+      if (response?.ok) {
+        toast.success("Đăng nhập thành công!");
+        router.push(Routers.EVENTS);
       } else {
-        let errorMessage = "Username/ mật khẩu sai vui lòng kiểm tra lại";
-        
+        let errorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
+
         if (response?.error) {
           if (response.error.includes("timeout") || response.error.includes("Timeout")) {
             errorMessage = "Không thể kết nối đến máy chủ. Vui lòng thử lại";
@@ -69,113 +73,79 @@ export function LoginForm({ onSuccess, onError }: LoginFormProps) {
           }
         }
 
-        setError("root", { message: errorMessage });
-        onError?.(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error) {
-      const errorMessage = "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại";
-      setError("root", { message: errorMessage });
-      onError?.(errorMessage);
+      toast.error("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại");
+    } finally {
+      setIsSubmitting(false);
     }
-  };
+  };  
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="block text-gray-600 text-xs px-2.5">
-          Tên đăng nhập
-        </label>
-        <Controller
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-8">
+      {/* Header */}
+      <LoginHeader isDevelopment={getValues("isDevelopment")} />
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Email Input */}
+        <FormField
           name="email"
           control={control}
-          render={({ field, fieldState }) => (
-            <InputWithIcons
-              {...field}
-              id="email"
-              disabled={isSubmitting}
-              className="w-full mt-1"
-              placeholder="@mailname.com"
-              isInvalid={Boolean(fieldState.error)}
-              autoComplete="email"
-            />
-          )}
+          type="email"
+          label="Tên đăng nhập hoặc Email"
+          placeholder="Nhập tên đăng nhập hoặc email"
+          icon="user"
+          disabled={isSubmitting}
+          autoComplete="username"
         />
-        {errors.email && (
-          <p className="text-red-500 text-xs mt-1 px-2.5">{errors.email.message}</p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="password" className="block text-gray-600 text-xs px-2.5">
-          Mật khẩu
-        </label>
-        <Controller
+        {/* Password Input */}
+        <FormField
           name="password"
           control={control}
-          render={({ field, fieldState }) => (
-            <InputWithIcons
-              {...field}
-              id="password"
-              disabled={isSubmitting}
-              className="w-full mt-1"
-              placeholder="************"
-              type={isShowPassword ? "text" : "password"}
-              isInvalid={Boolean(fieldState.error)}
-              autoComplete="current-password"
-              onClickTrailing={() => setIsShowPassword(!isShowPassword)}
-              trailing={isShowPassword ? "/icons/eye-blink.svg" : "/icons/eye-open.svg"}
-            />
-          )}
+          type="password"
+          label="Mật khẩu"
+          placeholder="Nhập mật khẩu"
+          icon="lock"
+          disabled={isSubmitting}
+          autoComplete="current-password"
         />
-        {errors.password && (
-          <p className="text-red-500 text-xs mt-1 px-2.5">{errors.password.message}</p>
-        )}
-      </div>
 
-      {errors.root && (
-        <div className="flex items-center text-red-500">
-          <span className="text-sm">{errors.root.message}</span>
-        </div>
-      )}
-
-      <div className="flex items-center justify-between">
-        <label className="flex items-center text-secondary-600 font-bold select-none cursor-pointer">
-          <input
-            type="checkbox"
-            {...register("savePassword")}
-            className="checkbox mr-2"
-            disabled={isSubmitting}
+        {/* Remember Me & Forgot Password */}
+        <div className="flex items-center justify-between">
+          <Controller
+            name="savePassword"
+            control={control}
+            render={({ field }) => (
+              <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting}>
+                <span className="text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
+              </Checkbox>
+            )}
           />
-          <span className="text-sm">Lưu mật khẩu</span>
-        </label>
-        <Link href={Routers.FORGOT} className="text-gray-500 font-bold text-sm hover:text-gray-700">
-          Quên mật khẩu?
-        </Link>
-      </div>
+          <Link
+            href={Routers.FORGOT}
+            className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Quên mật khẩu?
+          </Link>
+        </div>
 
-      <input type="hidden" {...register("isDevelopment")} />
-
-      <div className="form-actions mt-6">
+        {/* Submit Button */}
         <Button
-          data-test="submit"
-          isLoading={isSubmitting}
-          htmlType="submit"
           type="primary"
-          className="w-full"
-          disabled={isSubmitting || !isValid}
+          htmlType="submit"
+          size="large"
+          loading={isSubmitting}
+          disabled={isSubmitting}
+          className="w-full h-12 text-base font-semibold rounded-lg"
         >
           Đăng nhập
         </Button>
-      </div>
-
-      {isDev && (
-        <div className="text-center">
-          <span className="inline-block text-xs rounded-md bg-yellow-100 text-yellow-800 px-2 py-1">
-            Development Mode
-          </span>
-        </div>
-      )}
-    </form>
+      </form>
+    </div>
   );
 }
 
+export default LoginForm;

@@ -11,6 +11,7 @@ import useBoolean from "../../hooks/useBoolean";
 import { useQueryClient } from "@tanstack/react-query";
 import { signOut } from "next-auth/react";
 import { Routers } from "../router";
+import { useAuth } from "shared/hooks/useAuth";
 
 type Permission = number;
 export interface NavigationItemType {
@@ -243,30 +244,12 @@ function NavigationGroup({
 
 export function Navigation(props: JSX.IntrinsicElements["nav"]) {
   const navigations = useNavigationStore((s) => s.navigations);
-  const isLoading = useBoolean();
-  //   const queryClient = useQueryClient();
-  const router = useRouter();
 
-  const logout = async () => {
-    try {
-      isLoading.setTrue();
-      await signOut({ callbackUrl: Routers.LOGIN });
-    } finally {
-      //   queryClient.clear();
-      isLoading.setFalse();
-    }
-  };
+  const { signOut } = useAuth();
 
   return (
     <nav {...props}>
       <ul role="list">
-        {/* {configs.IS_DEVELOPMENT && (
-          <>
-            <TopLevelNavItem href="#">API</TopLevelNavItem>
-            <TopLevelNavItem href="#">Documentation</TopLevelNavItem>
-            <TopLevelNavItem href="#">Support</TopLevelNavItem>
-          </>
-        )} */}
         {navigations.map((group, groupIndex) => (
           <NavigationGroup
             key={group.title}
@@ -275,7 +258,7 @@ export function Navigation(props: JSX.IntrinsicElements["nav"]) {
           />
         ))}
         <li className="sticky bottom-0 z-10 mt-6">
-          <Button disabled={isLoading.value} className="w-full" onClick={logout}>
+          <Button className="w-full" onClick={() => signOut(Routers.LOGIN)}>
             Đăng xuất
           </Button>
         </li>
