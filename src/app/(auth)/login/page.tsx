@@ -29,12 +29,12 @@ type LoginFormData = z.infer<typeof loginSchema>;
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || Routers.EVENTS;
+  const callbackUrl = decodeURIComponent(searchParams.get("callbackUrl") || Routers.EVENTS);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Redirect nếu đã đăng nhập
   const { redirectIfAuthenticated } = useAuth();
-  
+
   useEffect(() => {
     redirectIfAuthenticated(callbackUrl);
   }, [redirectIfAuthenticated, callbackUrl]);
@@ -62,7 +62,7 @@ function LoginFormContent() {
     setValue,
     fieldName: "isDevelopment",
   });
-  
+
   // Watch values for button disable and dev mode
   const emailValue = watch("email");
   const passwordValue = watch("password");
@@ -124,9 +124,7 @@ function LoginFormContent() {
 
         {/* Title and Description */}
         <div className="space-y-3">
-          <p className="text-gray-600 dark:text-gray-400">
-            Đăng nhập để tiếp tục vào hệ thống
-          </p>
+          <p className="text-gray-600 dark:text-gray-400">Đăng nhập để tiếp tục vào hệ thống</p>
         </div>
       </div>
 
@@ -134,7 +132,10 @@ function LoginFormContent() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Email Input */}
         <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Tên đăng nhập hoặc Email
           </label>
           <Controller
@@ -163,7 +164,10 @@ function LoginFormContent() {
 
         {/* Password Input */}
         <div className="space-y-2">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
             Mật khẩu
           </label>
           <Controller
@@ -197,11 +201,7 @@ function LoginFormContent() {
             name="savePassword"
             control={control}
             render={({ field }) => (
-              <Checkbox
-                checked={field.value}
-                onChange={field.onChange}
-                disabled={isSubmitting}
-              >
+              <Checkbox checked={field.value} onChange={field.onChange} disabled={isSubmitting}>
                 <span className="text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
               </Checkbox>
             )}
@@ -225,7 +225,6 @@ function LoginFormContent() {
         >
           Đăng nhập
         </Button>
-
       </form>
     </div>
   );
@@ -233,7 +232,7 @@ function LoginFormContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 space-y-8">
           <div className="text-center space-y-6">
@@ -241,9 +240,7 @@ export default function LoginPage() {
               <Logo className="fill-black dark:fill-light" fill="currentColor" />
             </div>
             <div className="space-y-3">
-              <p className="text-gray-600 dark:text-gray-400">
-                Đang tải...
-              </p>
+              <p className="text-gray-600 dark:text-gray-400">Đang tải...</p>
             </div>
           </div>
         </div>
@@ -253,4 +250,3 @@ export default function LoginPage() {
     </Suspense>
   );
 }
-
