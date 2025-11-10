@@ -82,7 +82,7 @@ function LoginFormContent() {
         redirect: false,
       });
 
-      if (response?.ok && response.status === 200) {
+      if (response?.ok) {
         toast.success("Đăng nhập thành công!");
         router.replace(callbackUrl);
       } else {
