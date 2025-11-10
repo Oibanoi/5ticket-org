@@ -78,13 +78,15 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
   //   if (tenant?.metadata)
   //     setInfoCompany(JSON.parse(tenant?.metadata as string));
   // }, [tenant]);
+  let hideTimeout: NodeJS.Timeout;
 
   const handleMouseEnter = () => {
+    clearTimeout(hideTimeout);
     setIsDroplistVisible(true);
   };
 
   const handleMouseLeave = () => {
-    setIsDroplistVisible(false);
+    hideTimeout = setTimeout(() => setIsDroplistVisible(false), 150);
   };
 
   // const queryClient = useQueryClient();
@@ -138,7 +140,8 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
                   {user.name || user.email || "User"}
                 </p>
                 <p className="text-xs leading-3 capitalize">
-                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() || "User"}
+                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() ||
+                    "User"}
                 </p>
               </div>
               <div className="w-8">
@@ -163,17 +166,18 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
                 "tenant-droplist absolute right-0 top-12 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-lg py-2 border border-gray-200 dark:border-gray-700 z-50",
                 isDroplistVisible ? "block" : "hidden"
               )}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
               {/* User Info Section */}
               <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                 <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                   {user.name || "Người dùng"}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {user.email}
-                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                 <p className="text-xs text-blue-600 dark:text-blue-400 mt-1 capitalize">
-                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() || "User"}
+                  {(user as any).role?.name?.replace("ROLE_", "").replace("_", " ").toLowerCase() ||
+                    "User"}
                 </p>
               </div>
 
@@ -186,7 +190,7 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
                   <Svg src="/icons/akar-icons_info.svg" width={16} height={16} />
                   <span>Thông tin cá nhân</span>
                 </button>
-                
+
                 <button
                   className="w-full cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-3"
                   onClick={() => router.push("/settings")}
@@ -196,7 +200,7 @@ export const Header = forwardRef<HTMLDivElement, JSX.IntrinsicElements["div"]>(f
                 </button>
 
                 <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                
+
                 <button
                   className="w-full cursor-pointer px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3"
                   onClick={logout}

@@ -269,14 +269,15 @@ export default function PageEvents() {
       </section>
 
       <section className="relative overflow-hidden xl:overflow-auto">
-        {race.isFetching && (
-          <div className="absolute inset-0 center-by-grid bg-gradient-radial from-white to-transparent">
-            <Spin />
-          </div>
-        )}
-        <table className="block xl:table w-full mt-4 border-separate border-spacing-y-4 overflow-hidden">
+        <table className="block xl:table w-full mt-4 border-separate border-spacing-y-4 overflow-hidden relative z-0">
           <tbody className="block xl:table-row-group space-y-4 xl:space-y-0 w-full">
-            {table.getRowModel().rows.length ? (
+            {race.isFetching ? (
+              <tr>
+                <td colSpan={999} className="py-5 text-center">
+                  <i>Đang tải dữ liệu...</i>
+                </td>
+              </tr>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
@@ -287,11 +288,7 @@ export default function PageEvents() {
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      {...cell.column.columnDef.meta}
-                      //   className={clsx(cell.column.columnDef.meta?.className)}
-                    >
+                    <td key={cell.id} {...cell.column.columnDef.meta}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
