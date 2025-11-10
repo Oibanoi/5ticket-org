@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { Button, Input } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import InputMedia from "shared/components/input/input-media";
@@ -13,20 +13,24 @@ type Organizer = {
   logo: string | null;
 };
 
-const Details: React.FC = () => {
-  const { getValues, setValue, formState, register, watch } = useFormContext();
+type Description = {
+  title: string;
+  content: string;
+};
 
-  const descriptionsField = useFieldArray({ name: "descriptions" });
+const Details: React.FC = () => {
+  const { getValues, setValue, formState, register } = useFormContext();
+
   const [organizationalUnits, setOrganizationalUnits] = useState<Organizer[]>([]);
-  const initValues = watch("organizational_units");
+  const [descriptions, setDescriptions] = useState<Description[]>([]);
   // ✅ Lấy giá trị ban đầu từ form (string → object[])
   useEffect(() => {
-    const init = initValues || getValues("organizational_units");
-    console.log("init", init);
+    // Organizational units
+    const orgInit = getValues("organizational_units");
     try {
-      const parsed = init ? JSON.parse(init) : [];
-      if (Array.isArray(parsed)) {
-        setOrganizationalUnits(parsed);
+      const orgParsed = orgInit ? JSON.parse(orgInit) : [];
+      if (Array.isArray(orgParsed)) {
+        setOrganizationalUnits(orgParsed);
       } else {
         setOrganizationalUnits([]);
         setValue("organizational_units", "[]");
@@ -35,7 +39,22 @@ const Details: React.FC = () => {
       setOrganizationalUnits([]);
       setValue("organizational_units", "[]");
     }
-  }, [initValues, getValues, setValue]);
+
+    // Descriptions
+    const descInit = getValues("description");
+    try {
+      const descParsed = descInit ? JSON.parse(descInit) : [];
+      if (Array.isArray(descParsed)) {
+        setDescriptions(descParsed);
+      } else {
+        setDescriptions([]);
+        setValue("description", "[]");
+      }
+    } catch {
+      setDescriptions([]);
+      setValue("description", "[]");
+    }
+  }, []);
 
   // ✅ Đồng bộ state → form field (string)
   const updateFormValue = (list: Organizer[]) => {
@@ -57,6 +76,26 @@ const Details: React.FC = () => {
   const handleChangeLogo = (index: number, logo: string) => {
     const newList = organizationalUnits.map((o, i) => (i === index ? { ...o, logo } : o));
     updateFormValue(newList);
+  };
+
+  // ✅ Description management
+  const updateDescriptionFormValue = (list: Description[]) => {
+    setDescriptions(list);
+    setValue("description", JSON.stringify(list));
+  };
+
+  const handleAddDescription = () => updateDescriptionFormValue([...descriptions, { title: "", content: "" }]);
+  const handleRemoveDescription = (index: number) =>
+    updateDescriptionFormValue(descriptions.filter((_, i) => i !== index));
+
+  const handleChangeDescriptionTitle = (index: number, title: string) => {
+    const newList = descriptions.map((d, i) => (i === index ? { ...d, title } : d));
+    updateDescriptionFormValue(newList);
+  };
+
+  const handleChangeDescriptionContent = (index: number, content: string) => {
+    const newList = descriptions.map((d, i) => (i === index ? { ...d, content } : d));
+    updateDescriptionFormValue(newList);
   };
 
   // ✅ Hàm chọn ảnh qua modal
@@ -193,30 +232,28 @@ const Details: React.FC = () => {
       <div className="bg-white py-4 px-6 rounded-md">
         <div className="font-bold mb-4">Mô tả sự kiện</div>
         <div className="space-y-3">
-          {descriptionsField.fields.map((field, index) => (
-            <div key={field.id} className="border rounded-lg p-4">
+          {descriptions.map((desc, index) => (
+            <div key={index} className="border rounded-lg p-4">
               <div className="flex justify-between items-center mb-3">
                 <span className="font-medium">Mô tả {index + 1}</span>
                 <Button
                   type="text"
                   danger
                   icon={<DeleteOutlined />}
-                  onClick={() => descriptionsField.remove(index)}
+                  onClick={() => handleRemoveDescription(index)}
                 />
               </div>
               <div className="space-y-3">
-                <RenderField
-                  name={`descriptions.${index}.title`}
-                  type="input"
+                <Input
                   placeholder="Tiêu đề mô tả"
-                  required
+                  value={desc.title}
+                  onChange={(e) => handleChangeDescriptionTitle(index, e.target.value)}
                 />
-                <RenderField
-                  name={`descriptions.${index}.content`}
-                  type="textarea"
+                <Input.TextArea
                   placeholder="Nội dung mô tả chi tiết"
-                  required
-                  props={{ rows: 4 }}
+                  value={desc.content}
+                  onChange={(e) => handleChangeDescriptionContent(index, e.target.value)}
+                  rows={4}
                 />
               </div>
             </div>
@@ -225,12 +262,17 @@ const Details: React.FC = () => {
             <Button
               type="dashed"
               icon={<PlusOutlined />}
-              onClick={() => descriptionsField.append({ title: "", content: "" })}
+              onClick={handleAddDescription}
               className="ml-auto"
             >
               Thêm mô tả
             </Button>
           </div>
+          {!descriptions.length && (
+            <Button type="dashed" icon={<PlusOutlined />} onClick={handleAddDescription}>
+              Thêm mô tả
+            </Button>
+          )}
         </div>
       </div>
     </div>

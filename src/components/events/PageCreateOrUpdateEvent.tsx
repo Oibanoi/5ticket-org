@@ -46,8 +46,8 @@ export interface EventFormData {
   wall_paper_url?: string;
   logo_url?: string;
   email_image_url?: string;
-  organizational_units: Array<{ name: string; logo?: File | null }>;
-  descriptions: Array<{ title: string; content: string }>;
+  organizational_units: string;
+  description: string;
   shows: Array<{
     id: number;
     name: string;
@@ -143,14 +143,8 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
     wall_paper_url: "",
     logo_url: "",
     email_image_url: "",
-    organizational_units: [{ name: "Công ty ABC", logo: null }],
-    descriptions: [
-      {
-        title: "Giới thiệu sự kiện",
-        content:
-          "Đây là mô tả mẫu cho sự kiện. Vui lòng cập nhật thông tin chi tiết về sự kiện của bạn.",
-      },
-    ],
+    organizational_units: "",
+    description: "",
     shows: [
       {
         id: 1,
@@ -219,21 +213,9 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
     out.wall_paper_url = src.wall_paper_url ?? "";
     out.email_image_url = src.email_image_url ?? "";
 
-    if (Array.isArray(src.organizational_units)) {
-      out.organizational_units = src.organizational_units.map((o: any) => ({
-        name: o.name || o,
-        logo: o.logo ?? null,
-      }));
-    }
+    out.organizational_units = src.organizational_units ?? "";
 
-    if (Array.isArray(src.descriptions)) {
-      out.descriptions = src.descriptions.map((d: any) => ({
-        title: d.title ?? "",
-        content: d.content ?? d.description ?? "",
-      }));
-    } else if (src.description) {
-      out.descriptions = [{ title: "Giới thiệu", content: src.description }];
-    }
+    out.description = src.description ?? "";
 
     if (Array.isArray(src.shows)) {
       out.shows = src.shows.map((s: any, idx: number) => {
@@ -280,6 +262,7 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
 
   useEffect(() => {
     if (propDefaultValues) {
+      console.log("Resetting form with new default values:", propDefaultValues);
       const mapped = {
         ...fallbackDefaults,
         ...(mapToForm(propDefaultValues) as EventFormData),
@@ -356,8 +339,8 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
         logo_url: initialDefaults.logo_url || "",
         wall_paper_url: initialDefaults.wall_paper_url || "",
         email_image_url: initialDefaults.email_image_url || "",
-        organizational_units: JSON.stringify(initialDefaults.organizational_units || []),
-        description: JSON.stringify(initialDefaults.descriptions || []),
+        organizational_units: initialDefaults.organizational_units || "",
+        description: initialDefaults.description || "",
         is_enable: true,
         base_price: 0,
         add_or_update_blacklist:
@@ -430,8 +413,8 @@ const PageCreateOrUpdateEvent: React.FC<PageCreateOrUpdateEventProps> = ({
         logo_url: values.logo_url || "",
         wall_paper_url: values.wall_paper_url || "",
         email_image_url: values.email_image_url || "",
-        organizational_units: JSON.stringify(values.organizational_units || []),
-        description: JSON.stringify(values.descriptions || []),
+        organizational_units: values.organizational_units || "",
+        description: values.description || "",
         is_enable: true,
         base_price: 0,
         add_or_update_blacklist:

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import PageCreateOrUpdateEvent, { EventFormData } from "components/events/PageCreateOrUpdateEvent";
 import { toast } from "react-hot-toast";
 import { getEventById, GetEventResponse } from "features/event/services/getEvent";
+import api from "shared/lib/api";
 
 // Transform API response to form data
 const transformEventData = (apiData: GetEventResponse): EventFormData => {
@@ -33,8 +34,8 @@ const transformEventData = (apiData: GetEventResponse): EventFormData => {
     wall_paper_url: apiData.wall_paper_url,
     logo_url: apiData.logo_url,
     email_image_url: apiData.email_image_url,
-    organizational_units: [{ name: "", logo: null }],
-    descriptions: [{ title: "", content: "" }],
+    organizational_units: apiData.organizational_units,
+    description: apiData.description,
     shows: [
       {
         id: 1,
@@ -100,6 +101,7 @@ const PageEditEvent: NextPage = () => {
   }, [error]);
 
   const eventData = apiData ? transformEventData(apiData) : null;
+  console.log("eventData", eventData);
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

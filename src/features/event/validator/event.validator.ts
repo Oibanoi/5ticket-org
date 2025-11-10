@@ -12,7 +12,7 @@ export const stepSchemas = {
     location: Joi.string().required().messages({ "string.empty": "Địa điểm là bắt buộc" }),
   }).unknown(true),
   1: Joi.object({
-    descriptions: Joi.array().min(1).required().messages({ "array.min": "Cần ít nhất 1 mô tả" }),
+    // descriptions: Joi.array().min(1).required().messages({ "array.min": "Cần ít nhất 1 mô tả" }),
     // coverImage: Joi.array().min(1).messages({ "array.min": "Ảnh bìa là bắt buộc" }),
     // organizers: Joi.array()
     //   .min(1)
