@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input, Button, Checkbox } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, LockOutlined } from "@ant-design/icons";
@@ -31,13 +31,13 @@ function LoginFormContent() {
   const searchParams = useSearchParams();
   const callbackUrl = decodeURIComponent(searchParams.get("callbackUrl") || Routers.EVENTS);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Redirect nếu đã đăng nhập
-  const { redirectIfAuthenticated } = useAuth();
+  const { status } = useSession();
 
   useEffect(() => {
-    redirectIfAuthenticated(callbackUrl);
-  }, [redirectIfAuthenticated, callbackUrl]);
+    if (status === "authenticated") {
+      router.replace(callbackUrl);
+    }
+  }, [status, callbackUrl]);
 
   const {
     handleSubmit,
