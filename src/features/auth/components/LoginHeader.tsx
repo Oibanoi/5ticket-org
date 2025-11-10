@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Logo } from "components/layout/secondary/logo";
 
 interface LoginHeaderProps {
@@ -9,19 +8,25 @@ interface LoginHeaderProps {
 
 export function LoginHeader({ isDevelopment }: LoginHeaderProps) {
   return (
-    <div className="flex items-center flex-col">
-      <div>
-        <Link href="/" className="relative flex items-end">
-          <Logo className="text-secondary-600 w-32" stroke="currentColor" fill="currentColor" />
-          {isDevelopment && (
-            <b className="inline-block text-xxs ml-0.5 rounded-md bg-black dark:bg-white text-white dark:text-black px-1 mb-0.5">
-              DEV
-            </b>
-          )}
-        </Link>
-      </div>
-      <h2 className="text-secondary-600 text-xl font-bold mt-3">Đăng nhập hệ thống</h2>
+    <div className="text-center space-y-6">
+    {/* Logo with DEV Badge */}
+    <div className="relative inline-flex items-center justify-center">
+      <Logo className="fill-black dark:fill-light" fill="currentColor" />
+      {isDevelopment && (
+        <div className="absolute -top-2 -right-2 animate-pulse">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ">
+            <span className="w-2 h-2 bg-white rounded-full mr-1 animate-ping"></span>
+            DEV
+          </span>
+        </div>
+      )}
     </div>
+
+    {/* Title and Description */}
+    <div className="space-y-3">
+      <p className="text-gray-600 dark:text-gray-400">Đăng nhập để tiếp tục vào hệ thống</p>
+    </div>
+  </div>
   );
 }
 
