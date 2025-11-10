@@ -84,6 +84,7 @@ function LoginFormContent() {
 
       if (response?.ok) {
         toast.success("Đăng nhập thành công!");
+        console.log(callbackUrl);
         router.replace(callbackUrl);
       } else {
         let errorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
