@@ -61,7 +61,7 @@ function LoginForm() {
 
       if (response?.ok) {
         toast.success("Đăng nhập thành công!");
-        router.push(Routers.EVENTS);
+        window.location.href = Routers.EVENTS;
       } else {
         let errorMessage = "Tên đăng nhập hoặc mật khẩu không đúng";
 
